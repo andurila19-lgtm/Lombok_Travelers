@@ -116,48 +116,20 @@ export default function TripHarianPage() {
                     <span className="harian-price-val">{convertPriceString(trip.price)}</span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '12px' }}>
                     <button
                       type="button"
                       onClick={() => handleOpenBooking(trip)}
-                      className="btn-harian-link"
-                      style={{
-                        background: 'var(--primary, #185a38)',
-                        color: '#ffffff',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '9px 10px',
-                        fontSize: '12.5px',
-                        fontWeight: 700,
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        boxShadow: '0 2px 6px rgba(24, 90, 56, 0.25)',
-                      }}
+                      className="btn-card-primary"
                     >
-                      <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book Trip' : 'Booking'}
+                      <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
                     </button>
 
                     <a
                       href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20tertarik%20dengan%20${encodeURIComponent(trip.title)}.%20Mohon%20info%20jadwal%20dan%20penjemputan.`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-harian-link"
-                      style={{
-                        background: '#25d366',
-                        color: '#ffffff',
-                        textDecoration: 'none',
-                        padding: '9px 10px',
-                        fontSize: '12.5px',
-                        fontWeight: 700,
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                      }}
+                      className="btn-card-secondary"
                     >
                       <i className="fa fa-whatsapp"></i> Chat WA
                     </a>

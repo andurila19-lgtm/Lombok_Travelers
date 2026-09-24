@@ -99,8 +99,8 @@ export default function Navbar() {
             </div>
           </nav>
 
-          {/* Language & Currency Controls Right */}
-          <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Language & Currency Controls Right (Desktop) */}
+          <div className="header-right desktop-controls">
             {/* Currency Selector Pill */}
             <div style={{
               display: 'inline-flex',
@@ -217,25 +217,90 @@ export default function Navbar() {
         <div className="mobile-nav-content">
           <div className="mobile-nav-header">
             <div className="brand-logo-text">
-              <span className="brand-name" style={{ fontSize: '17px' }}>Lombok_Travelers</span>
-              <span className="brand-tagline">Tetebatu Travel Partner</span>
+              <span className="brand-name" style={{ fontSize: '16px', color: '#002366' }}>Lombok_Travelers</span>
+              <span className="brand-tagline">Tetebatu • Lombok Timur</span>
             </div>
-            <button style={{ background: 'none', border: 'none', fontSize: '20px', color: 'var(--dark)', cursor: 'pointer' }} onClick={() => setMobileOpen(false)}>
+            <button className="mobile-nav-close" aria-label="Tutup Menu" onClick={() => setMobileOpen(false)}>
               <i className="fa fa-times"></i>
             </button>
           </div>
           <div className="mobile-nav-links">
-            <Link href="/" onClick={() => setMobileOpen(false)}>{t.nav.home}</Link>
-            <Link href="/paket" onClick={() => setMobileOpen(false)}>{t.nav.tourPackages}</Link>
-            <Link href="/trip-harian" onClick={() => setMobileOpen(false)}>{t.nav.dailyTrips}</Link>
-            <Link href="/transport" onClick={() => setMobileOpen(false)}>{t.nav.transport}</Link>
-            <Link href="/artikel" onClick={() => setMobileOpen(false)}>{t.nav.articles}</Link>
-            <Link href="/tentang-kami" onClick={() => setMobileOpen(false)}>{language === 'en' ? 'About Us' : 'Tentang Kami'}</Link>
-            <Link href="/kontak" onClick={() => setMobileOpen(false)}>{language === 'en' ? 'Contact' : 'Kontak'}</Link>
+            <Link href="/" className={isHome ? 'active' : ''} onClick={() => setMobileOpen(false)}>
+              <span><i className="fa fa-home" style={{ width: '22px', color: 'var(--primary)' }}></i> {t.nav.home}</span>
+              <i className="fa fa-angle-right" style={{ color: '#cbd5e1', fontSize: '13px' }}></i>
+            </Link>
+            <Link href="/paket" className={isPaket ? 'active' : ''} onClick={() => setMobileOpen(false)}>
+              <span><i className="fa fa-suitcase" style={{ width: '22px', color: 'var(--primary)' }}></i> {t.nav.tourPackages}</span>
+              <i className="fa fa-angle-right" style={{ color: '#cbd5e1', fontSize: '13px' }}></i>
+            </Link>
+            <Link href="/trip-harian" className={isTrip ? 'active' : ''} onClick={() => setMobileOpen(false)}>
+              <span><i className="fa fa-clock-o" style={{ width: '22px', color: 'var(--primary)' }}></i> {t.nav.dailyTrips}</span>
+              <i className="fa fa-angle-right" style={{ color: '#cbd5e1', fontSize: '13px' }}></i>
+            </Link>
+            <Link href="/transport" className={isTransport ? 'active' : ''} onClick={() => setMobileOpen(false)}>
+              <span><i className="fa fa-car" style={{ width: '22px', color: 'var(--primary)' }}></i> {t.nav.transport}</span>
+              <i className="fa fa-angle-right" style={{ color: '#cbd5e1', fontSize: '13px' }}></i>
+            </Link>
+            <Link href="/artikel" className={isArtikel ? 'active' : ''} onClick={() => setMobileOpen(false)}>
+              <span><i className="fa fa-newspaper-o" style={{ width: '22px', color: 'var(--primary)' }}></i> {t.nav.articles}</span>
+              <i className="fa fa-angle-right" style={{ color: '#cbd5e1', fontSize: '13px' }}></i>
+            </Link>
+            <Link href="/tentang-kami" className={isAbout ? 'active' : ''} onClick={() => setMobileOpen(false)}>
+              <span><i className="fa fa-users" style={{ width: '22px', color: 'var(--primary)' }}></i> {language === 'en' ? 'About Us' : 'Tentang Kami'}</span>
+              <i className="fa fa-angle-right" style={{ color: '#cbd5e1', fontSize: '13px' }}></i>
+            </Link>
+            <Link href="/kontak" className={isKontak ? 'active' : ''} onClick={() => setMobileOpen(false)}>
+              <span><i className="fa fa-envelope-o" style={{ width: '22px', color: 'var(--primary)' }}></i> {language === 'en' ? 'Contact' : 'Kontak'}</span>
+              <i className="fa fa-angle-right" style={{ color: '#cbd5e1', fontSize: '13px' }}></i>
+            </Link>
           </div>
           <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid var(--border-light)' }}>
+            {/* Mobile Language Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>
+                <i className="fa fa-globe"></i> Bahasa:
+              </div>
+              <div style={{ display: 'inline-flex', background: '#f1f5f9', borderRadius: '16px', padding: '2px', border: '1px solid #cbd5e1' }}>
+                <button
+                  type="button"
+                  onClick={() => setLanguage('id')}
+                  style={{
+                    background: language === 'id' ? '#002366' : 'transparent',
+                    color: language === 'id' ? '#fff' : '#64748b',
+                    border: 'none',
+                    borderRadius: '14px',
+                    padding: '3px 10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  ID
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage('en')}
+                  style={{
+                    background: language === 'en' ? '#002366' : 'transparent',
+                    color: language === 'en' ? '#fff' : '#64748b',
+                    border: 'none',
+                    borderRadius: '14px',
+                    padding: '3px 10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  EN
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Currency Selector */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-              <div style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Currency:</div>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>
+                <i className="fa fa-money"></i> Currency:
+              </div>
               <div style={{ display: 'inline-flex', background: '#f1f5f9', borderRadius: '16px', padding: '2px', border: '1px solid #cbd5e1' }}>
                 <button
                   type="button"

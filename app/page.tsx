@@ -151,14 +151,22 @@ export default function HomePage() {
                       </span>
                       <span className="harian-price-val">{trip.price}</span>
                     </div>
-                    <a
-                      href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20tanya%20Trip%20Harian:%20${encodeURIComponent(trip.title)}.`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-harian-link"
-                    >
-                      {language === 'en' ? 'View Details' : 'Lihat Detail'} <i className="fa fa-angle-right"></i>
-                    </a>
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <Link
+                        href="/trip-harian"
+                        className="btn-card-secondary"
+                      >
+                        {language === 'en' ? 'Detail' : 'Detail'}
+                      </Link>
+                      <a
+                        href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20tanya%20Trip%20Harian:%20${encodeURIComponent(trip.title)}.`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-card-primary"
+                      >
+                        <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

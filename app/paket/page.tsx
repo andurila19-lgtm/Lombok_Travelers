@@ -1,11 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import packagesData from '@/data/packages.json';
 import { TourPackage } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import BookingModal from '@/components/BookingModal';
+
+function SearchParamSync({
+  setFilterCategory,
+  setSearchQuery,
+  setDurationFilter,
+}: {
+  setFilterCategory: (val: string) => void;
+  setSearchQuery: (val: string) => void;
+  setDurationFilter: (val: string) => void;
+}) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const kat = searchParams.get('kategori');
+    const des = searchParams.get('destinasi');
+    const dur = searchParams.get('durasi');
+
+    if (des && des !== 'semua') {
+      setSearchQuery(des);
+    }
+    if (dur && dur !== 'semua') {
+      setDurationFilter(dur);
+    }
+    if (kat && kat !== 'semua') {
+      const lower = kat.toLowerCase();
+      if (lower.includes('honeymoon')) setFilterCategory('honeymoon');
+      else if (lower.includes('private')) setFilterCategory('private');
+      else if (lower.includes('cultural') || lower.includes('tetebatu')) setFilterCategory('cultural');
+      else if (lower.includes('wisata')) setFilterCategory('lombok');
+    }
+  }, [searchParams, setFilterCategory, setSearchQuery, setDurationFilter]);
+
+  return null;
+}
 
 export default function PaketPage() {
   const { language } = useLanguage();
@@ -35,6 +70,14 @@ export default function PaketPage() {
 
   return (
     <div className="multipage-wrapper">
+      <Suspense fallback={null}>
+        <SearchParamSync
+          setFilterCategory={setFilterCategory}
+          setSearchQuery={setSearchQuery}
+          setDurationFilter={setDurationFilter}
+        />
+      </Suspense>
+
       {/* PAGE HEADER */}
       <div className="page-header-banner">
         <div className="box1140">
@@ -201,8 +244,8 @@ export default function PaketPage() {
                       </span>
                       <span className="price-value">{pkg.pricePlaceholder}</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      <Link href={`/paket/${pkg.slug}`} className="btn-detail">
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <Link href={`/paket/${pkg.slug}`} className="btn-card-secondary">
                         {language === 'en' ? 'Detail' : 'Detail'}
                       </Link>
                       <button
@@ -211,19 +254,7 @@ export default function PaketPage() {
                           setSelectedPkgSlug(pkg.slug);
                           setBookingModalOpen(true);
                         }}
-                        style={{
-                          background: 'var(--primary)',
-                          color: '#ffffff',
-                          border: 'none',
-                          borderRadius: '4px',
-                          padding: '6px 12px',
-                          fontSize: '12px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                        }}
+                        className="btn-card-primary"
                       >
                         <i className="fa fa-calendar-check-o"></i> Booking
                       </button>

@@ -88,9 +88,9 @@ export default function PackageList({ packages }: PackageListProps) {
                   <span className="price-label">{t.packages.perPerson}</span>
                   <span className="price-value">{convertPriceString(pkg.pricePlaceholder)}</span>
                 </div>
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  <Link href={`/paket/${pkg.slug}`} className="btn-detail">
-                    {t.packages.viewDetail}
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  <Link href={`/paket/${pkg.slug}`} className="btn-card-secondary">
+                    {language === 'en' ? 'Detail' : 'Detail'}
                   </Link>
                   <button
                     type="button"
@@ -98,19 +98,7 @@ export default function PackageList({ packages }: PackageListProps) {
                       setSelectedPkgSlug(pkg.slug);
                       setBookingModalOpen(true);
                     }}
-                    style={{
-                      background: 'var(--primary)',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '4px',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                    }}
+                    className="btn-card-primary"
                   >
                     <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
                   </button>

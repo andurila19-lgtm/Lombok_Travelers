@@ -13,11 +13,17 @@ export default function SearchBar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const target = document.getElementById('paket-wisata');
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+    const params = new URLSearchParams();
+    if (kategori && kategori !== 'semua') params.set('kategori', kategori);
+    if (destinasi && destinasi !== 'semua') params.set('destinasi', destinasi);
+    if (durasi && durasi !== 'semua') params.set('durasi', durasi);
+
+    const queryString = params.toString();
+
+    if (durasi === '1 Hari' || kategori === 'Paket Trip 1 Hari') {
+      router.push(`/trip-harian${queryString ? `?${queryString}` : ''}`);
     } else {
-      router.push('/#paket-wisata');
+      router.push(`/paket${queryString ? `?${queryString}` : ''}`);
     }
   };
 

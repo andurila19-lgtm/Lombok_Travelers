@@ -210,42 +210,44 @@ export default async function PackageDetailPage({ params }: PageProps) {
                 Harga dihitung per orang (pax) disesuaikan dengan jumlah rombongan dan pilihan kelas penginapan:
               </p>
 
-              <table className="price-table">
-                <thead>
-                  <tr>
-                    <th>Jumlah Peserta</th>
-                    <th>Paket Tanpa Hotel</th>
-                    <th>Paket Hotel Bintang 3</th>
-                    <th>Paket Hotel Bintang 4</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><strong>2 Orang (Pasangan/Duet)</strong></td>
-                    <td className="price-col">Konsultasikan</td>
-                    <td className="price-col">Request Price</td>
-                    <td className="price-col">Request Price</td>
-                  </tr>
-                  <tr>
-                    <td><strong>3 – 4 Orang (Keluarga Kecil)</strong></td>
-                    <td className="price-col">Konsultasikan</td>
-                    <td className="price-col">Request Price</td>
-                    <td className="price-col">Request Price</td>
-                  </tr>
-                  <tr>
-                    <td><strong>5 – 6 Orang (Grup Sedang)</strong></td>
-                    <td className="price-col">Konsultasikan</td>
-                    <td className="price-col">Request Price</td>
-                    <td className="price-col">Request Price</td>
-                  </tr>
-                  <tr>
-                    <td><strong>7 – 12+ Orang (Rombongan HiAce)</strong></td>
-                    <td className="price-col">Spesial Grup</td>
-                    <td className="price-col">Spesial Grup</td>
-                    <td className="price-col">Spesial Grup</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="table-responsive">
+                <table className="price-table">
+                  <thead>
+                    <tr>
+                      <th>Jumlah Peserta</th>
+                      <th>Paket Tanpa Hotel</th>
+                      <th>Paket Hotel Bintang 3</th>
+                      <th>Paket Hotel Bintang 4</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>2 Orang (Pasangan/Duet)</strong></td>
+                      <td className="price-col">Konsultasikan</td>
+                      <td className="price-col">Request Price</td>
+                      <td className="price-col">Request Price</td>
+                    </tr>
+                    <tr>
+                      <td><strong>3 – 4 Orang (Keluarga Kecil)</strong></td>
+                      <td className="price-col">Konsultasikan</td>
+                      <td className="price-col">Request Price</td>
+                      <td className="price-col">Request Price</td>
+                    </tr>
+                    <tr>
+                      <td><strong>5 – 6 Orang (Grup Sedang)</strong></td>
+                      <td className="price-col">Konsultasikan</td>
+                      <td className="price-col">Request Price</td>
+                      <td className="price-col">Request Price</td>
+                    </tr>
+                    <tr>
+                      <td><strong>7 – 12+ Orang (Rombongan HiAce)</strong></td>
+                      <td className="price-col">Spesial Grup</td>
+                      <td className="price-col">Spesial Grup</td>
+                      <td className="price-col">Spesial Grup</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               <p className="price-note">
                 * <em>Harga dapat disesuaikan berdasarkan jumlah peserta, periode liburan (High/Peak Season Lebaran, Natal & Tahun Baru), serta preferensi hotel. Hubungi tim Lombok_Travelers untuk penawaran terbaik dan diskon khusus rombongan.</em>

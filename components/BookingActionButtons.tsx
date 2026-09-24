@@ -56,30 +56,30 @@ export default function BookingActionButtons({
   if (variant === 'inline') {
     return (
       <>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '16px' }}>
+        <div className="booking-cta-buttons-row" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '14px' }}>
           <button
             type="button"
             onClick={() => setModalOpen(true)}
             className="btn-booking-primary"
             style={{
-              flex: '1 1 200px',
-              background: 'var(--primary)',
+              flex: '1 1 160px',
+              background: 'linear-gradient(135deg, #185a38 0%, #0f3d26 100%)',
               color: '#ffffff',
               border: 'none',
               borderRadius: '8px',
-              padding: '14px 22px',
-              fontSize: '15px',
+              padding: '11px 16px',
+              fontSize: '13.5px',
               fontWeight: 800,
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '10px',
-              boxShadow: '0 4px 14px rgba(24, 90, 56, 0.25)',
+              gap: '8px',
+              boxShadow: '0 3px 10px rgba(24, 90, 56, 0.25)',
               transition: 'all 0.2s ease',
             }}
           >
-            <i className="fa fa-calendar-check-o" style={{ fontSize: '18px' }}></i> Booking Sekarang
+            <i className="fa fa-calendar-check-o" style={{ fontSize: '15px' }}></i> Booking Sekarang
           </button>
 
           <a
@@ -87,22 +87,22 @@ export default function BookingActionButtons({
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              flex: '1 1 200px',
-              background: '#25d366',
+              flex: '1 1 160px',
+              background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
               color: '#ffffff',
               borderRadius: '8px',
-              padding: '14px 22px',
-              fontSize: '15px',
+              padding: '11px 16px',
+              fontSize: '13.5px',
               fontWeight: 800,
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '10px',
-              boxShadow: '0 4px 14px rgba(37, 211, 102, 0.2)',
+              gap: '8px',
+              boxShadow: '0 3px 10px rgba(37, 211, 102, 0.2)',
             }}
           >
-            <i className="fa fa-whatsapp" style={{ fontSize: '20px' }}></i> Chat via WhatsApp
+            <i className="fa fa-whatsapp" style={{ fontSize: '16px' }}></i> Chat via WhatsApp
           </a>
         </div>
 
