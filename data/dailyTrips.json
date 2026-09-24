@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "title": "Sasak & Kuta Mandalika",
+    "duration": "1 Hari",
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDr6U-cNCJReQAZiOIE9vEdk8RuA0b1ETWGkY9n0Dl4Y1S3aIvXg3BU-q6qa9DkD0AInIqEeQDraSgIyWfIndC_mmvKgO53RDefYqG8hrmIBgDxOpDYauPw7ljyl56Lk_SkJdVttpxGLZBTM35qlNCtc4MpNHuJfqpXiP5n8-lZQUezllR6qzmTf5Hrxp-akG7lvK6kXQ4Vh5mgvF4aQeI6zWqBHXNNnYaZKzifeQ0w0T3hFJ-dqG6g",
+    "desc": "Desa Adat Sade, Tenun Sukarara, Sirkuit Mandalika, Pantai Tanjung Aan & Bukit Merese.",
+    "price": "Konsultasikan"
+  },
+  {
+    "id": 2,
+    "title": "Tetebatu Nature Trip",
+    "duration": "1 Hari",
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBlyQbG7Xk09X-zF4TVEzN7vjZi_FlIDuKf7bUu83Me65P3hxtzztMudpHT6RLVnx-9IPaf9rQiOjxU1ftDedhn6zkfOQMPKJg1nsYTwcsl0QVAjL3ZL_Cgcbekbh68FZXJACB9dkkATQoSptLB2xryww4y86CVFQSKsiusDtbecb3z2-iS53MTRrKW6_PXM9d4Mkv2EYvt5bRh_Hhhwb8RW7PKhTqS1qGR9Rp1pcfEpM7Hnj6RUrZ1",
+    "desc": "Terasiring sawah Tetebatu, Black Monkey Forest, Air Terjun Sarang Walet & sangrai kopi lokal.",
+    "price": "Konsultasikan"
+  },
+  {
+    "id": 3,
+    "title": "Pink Beach & Snorkeling",
+    "duration": "1 Hari",
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDTbrGKinn1UKKBKH5wRoFYMO3R8yEVpHdEpf7bBfdTu1nUYYcTDECjmX12CZ_8eXyhRDJTK7jeZ11Fvs6hUY1rjly963y0tNadfutl_Ulv4cBK0mf3-gJkIaQHKav7mfW4VHPl3xOi-xjEhR7cHtaRfd_D0wC1wQrmXHMkRG-_hjmSGsYlAEv3v4wd3m9y_i2mQmxWZ_N_7_lHESWsTLMh79ooo4HaVGxc33YlnLlZDIyoI0Ajhya_",
+    "desc": "Eksplorasi Pantai Pink Tangsi, Pulau Pasir timbul, snorkeling terumbu karang di Gili Petelu.",
+    "price": "Konsultasikan"
+  },
+  {
+    "id": 4,
+    "title": "Gili Trawangan & 3 Gili",
+    "duration": "1 Hari",
+    "image": "/images/gili_snorkeling.jpg",
+    "desc": "Snorkeling bersama penyu di Gili Meno & Gili Air, keliling sepeda dan santai di Gili Trawangan.",
+    "price": "Konsultasikan"
+  },
+  {
+    "id": 5,
+    "title": "Gili Nanggu Secret Islands",
+    "duration": "1 Hari",
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuCXFiA-A1V3lxkRRq1TLYKAH--twJKYdv7yCAGetDcM84zUeDJarsMPI2qvt39BjQE76dYaIIf-EMmuak1VoQdhMdLyQq5w9OqNpwGFLKCnFYWuqvgrpupnt3StPM1Jk9N-5fRlRdaSnboo6KiuDoRoF_9tTyAN9r0-HUfh8_G2KUrUauRC90tK01QtnyKOHEHKmS2BrJzKu6PFV8ocCjXiYvb2xC21czJCcPdmhzzhbCkz5W-06V0o",
+    "desc": "Kawasan gili selatan yang tenang, surga snorkeling ikan warna-warni, makan siang di Gili Sudak & Kedis.",
+    "price": "Konsultasikan"
+  },
+  {
+    "id": 6,
+    "title": "Sembalun & Bukit Selong",
+    "duration": "1 Hari",
+    "image": "/images/sembalun_bukit_selong.jpg",
+    "desc": "Dataran tinggi kaki Gunung Rinjani, petak sawah warna-warni Bukit Selong, Desa Kuno Beleq & Kebun Strawberry.",
+    "price": "Konsultasikan"
+  },
+  {
+    "id": 7,
+    "title": "Air Terjun Senaru & Tiu Kelep",
+    "duration": "1 Hari",
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuCrdhTpDoO05VhKgf5uHhx2JjbLtWULHXfgSyWL9rMRw-hFYF76-JmxErOFqEpEwl1ZZAMgZMe_Ozyn6mGabgWSEZqiHbfqQEqx5_Q3VZyTyIRgujTXtGIKn1C-asysxMLe59NN3Fm8pb4GdjSaHBM2Z8aPg2PttvZ8uaJimjRXRJV69j9T05sb_H4Z61ndjaOTHFg9eNg3zA2ZVg0SvLAPwRle3pep5MdanbQtu8ZHod5AuYWCfpm3",
+    "desc": "Jalur trekking hutan tropis menuju Air Terjun Sendang Gile dan kemegahan Air Terjun Tiu Kelep di kaki Rinjani.",
+    "price": "Konsultasikan"
+  },
+  {
+    "id": 8,
+    "title": "South Lombok & Selong Belanak",
+    "duration": "1 Hari",
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuCXFiA-A1V3lxkRRq1TLYKAH--twJKYdv7yCAGetDcM84zUeDJarsMPI2qvt39BjQE76dYaIIf-EMmuak1VoQdhMdLyQq5w9OqNpwGFLKCnFYWuqvgrpupnt3StPM1Jk9N-5fRlRdaSnboo6KiuDoRoF_9tTyAN9r0-HUfh8_G2KUrUauRC90tK01QtnyKOHEHKmS2BrJzKu6PFV8ocCjXiYvb2xC21czJCcPdmhzzhbCkz5W-06V0o",
+    "desc": "Pantai Selong Belanak (belajar selancar), Pantai Mawun yang melengkung indah, dan sunset tebing Kuta.",
+    "price": "Konsultasikan"
+  }
+]
