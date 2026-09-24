@@ -37,3 +37,29 @@ export interface DailyTrip {
   desc: string;
   price: string;
 }
+
+export type BookingStatus =
+  | 'New Inquiry'
+  | 'Booking'
+  | 'DP'
+  | 'Lunas'
+  | 'Selesai'
+  | 'Cancelled';
+
+export interface Booking {
+  id: string;
+  booking_number: string;
+  customer_name: string;
+  whatsapp: string;
+  email?: string;
+  package_id: string;
+  package_name: string;
+  travel_date: string;
+  participants: number;
+  pickup_location: string;
+  transportation: string;
+  notes?: string;
+  status: BookingStatus;
+  created_at: string;
+  updated_at: string;
+}

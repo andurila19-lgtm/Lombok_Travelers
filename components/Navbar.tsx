@@ -8,7 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const pathname = usePathname();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, currency, setCurrency, t } = useLanguage();
 
   const isHome = pathname === '/';
   const isPaket = pathname.startsWith('/paket');
@@ -17,6 +17,10 @@ export default function Navbar() {
   const isArtikel = pathname.startsWith('/artikel');
   const isAbout = pathname.startsWith('/tentang-kami');
   const isKontak = pathname.startsWith('/kontak');
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <>
@@ -95,8 +99,56 @@ export default function Navbar() {
             </div>
           </nav>
 
-          {/* Language Toggle Right */}
-          <div className="header-right">
+          {/* Language & Currency Controls Right */}
+          <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* Currency Selector Pill */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              backgroundColor: '#f1f5f9',
+              borderRadius: '20px',
+              padding: '2px',
+              border: '1px solid #cbd5e1'
+            }}>
+              <button
+                type="button"
+                onClick={() => setCurrency('IDR')}
+                style={{
+                  background: currency === 'IDR' ? '#002366' : 'transparent',
+                  color: currency === 'IDR' ? '#ffffff' : '#64748b',
+                  border: 'none',
+                  borderRadius: '16px',
+                  padding: '3px 8px',
+                  fontWeight: currency === 'IDR' ? 700 : 600,
+                  fontSize: '11px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                title="Rupiah (IDR)"
+              >
+                IDR
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency('USD')}
+                style={{
+                  background: currency === 'USD' ? '#002366' : 'transparent',
+                  color: currency === 'USD' ? '#ffffff' : '#64748b',
+                  border: 'none',
+                  borderRadius: '16px',
+                  padding: '3px 8px',
+                  fontWeight: currency === 'USD' ? 700 : 600,
+                  fontSize: '11px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                title="US Dollar (USD)"
+              >
+                USD
+              </button>
+            </div>
+
+            {/* Language Toggle */}
             <div className="bahasa-toggle">
               <button
                 type="button"
@@ -181,7 +233,44 @@ export default function Navbar() {
             <Link href="/tentang-kami" onClick={() => setMobileOpen(false)}>{language === 'en' ? 'About Us' : 'Tentang Kami'}</Link>
             <Link href="/kontak" onClick={() => setMobileOpen(false)}>{language === 'en' ? 'Contact' : 'Kontak'}</Link>
           </div>
-          <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border-light)' }}>
+          <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid var(--border-light)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Currency:</div>
+              <div style={{ display: 'inline-flex', background: '#f1f5f9', borderRadius: '16px', padding: '2px', border: '1px solid #cbd5e1' }}>
+                <button
+                  type="button"
+                  onClick={() => setCurrency('IDR')}
+                  style={{
+                    background: currency === 'IDR' ? '#002366' : 'transparent',
+                    color: currency === 'IDR' ? '#fff' : '#64748b',
+                    border: 'none',
+                    borderRadius: '14px',
+                    padding: '3px 10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  IDR
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrency('USD')}
+                  style={{
+                    background: currency === 'USD' ? '#002366' : 'transparent',
+                    color: currency === 'USD' ? '#fff' : '#64748b',
+                    border: 'none',
+                    borderRadius: '14px',
+                    padding: '3px 10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  USD
+                </button>
+              </div>
+            </div>
             <a href="https://wa.me/6283117110638" target="_blank" rel="noopener noreferrer" className="btn-sidebar-wa">
               <i className="fa fa-whatsapp"></i> Chat WhatsApp
             </a>

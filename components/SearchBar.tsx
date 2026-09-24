@@ -28,10 +28,11 @@ export default function SearchBar() {
           
           {/* Col 1: Pilih Kategori */}
           <div className="srchome-col">
-            <span>{t.search.catLabel}</span>
+            <label htmlFor="kategori">{t.search.catLabel}</label>
             <select
               name="kat"
               id="kategori"
+              aria-label={t.search.catLabel}
               value={kategori}
               onChange={(e) => setKategori(e.target.value)}
             >
@@ -46,10 +47,11 @@ export default function SearchBar() {
 
           {/* Col 2: Pilih Destinasi */}
           <div className="srchome-col">
-            <span>{t.search.destLabel}</span>
+            <label htmlFor="destinasi">{t.search.destLabel}</label>
             <select
               name="des"
               id="destinasi"
+              aria-label={t.search.destLabel}
               value={destinasi}
               onChange={(e) => setDestinasi(e.target.value)}
             >
@@ -66,10 +68,11 @@ export default function SearchBar() {
 
           {/* Col 3: Pilih Durasi */}
           <div className="srchome-col">
-            <span>{t.search.durLabel}</span>
+            <label htmlFor="durasi">{t.search.durLabel}</label>
             <select
               name="dur"
               id="durasi"
+              aria-label={t.search.durLabel}
               value={durasi}
               onChange={(e) => setDurasi(e.target.value)}
             >

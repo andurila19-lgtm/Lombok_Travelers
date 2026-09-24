@@ -4,7 +4,6 @@
    Identity: Lombok_Travelers, Tetebatu, Lombok Timur
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap');
 
 :root {
   --primary: #185a38;          /* Deep Natural Green */
@@ -371,7 +370,8 @@ h1, h2, h3, h4, h5, h6 {
   gap: 6px;
 }
 
-.srchome-col span {
+.srchome-col span,
+.srchome-col label {
   display: block;
   color: #ffffff;
   font-size: 13.5px;
@@ -2462,8 +2462,86 @@ h1, h2, h3, h4, h5, h6 {
   .gallery-item.span-2 {
     grid-column: span 1;
   }
+  .footer-top {
+    padding: 24px 0 18px 0;
+  }
   .footer-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 12px;
+  }
+  .footer-grid > .footer-brand-info {
+    grid-column: span 2;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 2px;
+    gap: 6px;
+  }
+  .footer-logo-row {
+    margin-bottom: 2px;
+  }
+  .footer-logo-row img {
+    height: 30px;
+  }
+  .footer-logo-row span {
+    font-size: 16px;
+  }
+  .footer-brand-info p {
+    font-size: 11.5px;
+    line-height: 1.45;
+    margin: 2px 0 4px 0;
+    color: #94a3b8;
+  }
+  .footer-contact-item {
+    font-size: 11px;
+    margin-bottom: 3px;
+    gap: 6px;
+    line-height: 1.35;
+  }
+  .footer-contact-item i {
+    font-size: 12px;
+    margin-top: 1px;
+  }
+  .footer-sosmed {
+    margin-top: 4px;
+    gap: 6px;
+  }
+  .sosmed-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  .footer-col h3 {
+    font-size: 13px;
+    margin-bottom: 8px;
+    padding-bottom: 3px;
+    letter-spacing: -0.01em;
+  }
+  .footer-col h3::after {
+    width: 18px;
+    height: 2px;
+  }
+  .footer-links {
+    gap: 4px;
+  }
+  .footer-links a {
+    font-size: 11px;
+    line-height: 1.35;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+  .footer-bottom {
+    padding: 12px 0;
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+  .footer-bottom .box1140 {
+    flex-direction: column;
+    text-align: center;
+    gap: 6px !important;
+    justify-content: center;
   }
 }
 

@@ -88,6 +88,21 @@ export default function RootLayout({
       opens: '06:00',
       closes: '22:00'
     },
+    priceRange: 'Rp 500.000 - Rp 3.500.000',
+    currenciesAccepted: 'IDR, USD',
+    areaServed: [
+      { '@type': 'AdministrativeArea', name: 'Lombok' },
+      { '@type': 'AdministrativeArea', name: 'Tetebatu' },
+      { '@type': 'AdministrativeArea', name: 'Gili Islands' },
+      { '@type': 'AdministrativeArea', name: 'Sembalun' },
+    ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      reviewCount: '142',
+      bestRating: '5',
+      worstRating: '1',
+    },
     sameAs: [
       'https://www.instagram.com/lombok_travelers',
       'https://wa.me/6283117110638'
@@ -98,6 +113,13 @@ export default function RootLayout({
     <html lang="id">
       <head>
         <link rel="shortcut icon" href="/images/logo.png" type="image/png" />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/rinjani_hero.jpg"
+          // @ts-expect-error fetchpriority is standard in modern HTML
+          fetchpriority="high"
+        />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"

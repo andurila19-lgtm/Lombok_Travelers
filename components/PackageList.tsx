@@ -4,14 +4,17 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { TourPackage } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import BookingModal from '@/components/BookingModal';
 
 interface PackageListProps {
   packages: TourPackage[];
 }
 
 export default function PackageList({ packages }: PackageListProps) {
-  const { t } = useLanguage();
+  const { language, t, convertPriceString } = useLanguage();
   const [filter, setFilter] = useState<string>('all');
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedPkgSlug, setSelectedPkgSlug] = useState<string>('');
 
   const filteredPackages = packages.filter((pkg) => {
     if (filter === 'all') return true;
@@ -80,19 +83,49 @@ export default function PackageList({ packages }: PackageListProps) {
                 ))}
               </div>
 
-              <div className="package-card-footer">
+              <div className="package-card-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                 <div className="price-box">
                   <span className="price-label">{t.packages.perPerson}</span>
-                  <span className="price-value">{pkg.pricePlaceholder}</span>
+                  <span className="price-value">{convertPriceString(pkg.pricePlaceholder)}</span>
                 </div>
-                <Link href={`/paket/${pkg.slug}`} className="btn-detail">
-                  {t.packages.viewDetail}
-                </Link>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <Link href={`/paket/${pkg.slug}`} className="btn-detail">
+                    {t.packages.viewDetail}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedPkgSlug(pkg.slug);
+                      setBookingModalOpen(true);
+                    }}
+                    style={{
+                      background: 'var(--primary)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '4px',
+                      padding: '6px 12px',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      <BookingModal
+        isOpen={bookingModalOpen}
+        onClose={() => setBookingModalOpen(false)}
+        defaultPackageSlug={selectedPkgSlug}
+      />
     </>
   );
 }

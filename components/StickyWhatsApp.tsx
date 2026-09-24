@@ -1,9 +1,15 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function StickyWhatsApp() {
   const { t } = useLanguage();
+  const pathname = usePathname();
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <a

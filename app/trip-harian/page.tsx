@@ -5,11 +5,27 @@ import Link from 'next/link';
 import dailyTripsData from '@/data/dailyTrips.json';
 import { DailyTrip } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import BookingModal from '@/components/BookingModal';
 
 export default function TripHarianPage() {
-  const { language } = useLanguage();
+  const { language, convertPriceString } = useLanguage();
   const trips: DailyTrip[] = dailyTripsData as DailyTrip[];
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
+
+  // Booking Modal State
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedTripForBooking, setSelectedTripForBooking] = useState<{ title: string; slug: string }>({
+    title: '',
+    slug: '',
+  });
+
+  const handleOpenBooking = (trip: DailyTrip) => {
+    setSelectedTripForBooking({
+      title: trip.title,
+      slug: String(trip.id),
+    });
+    setIsBookingOpen(true);
+  };
 
   const filteredTrips = trips.filter((t) => {
     if (selectedRegion === 'all') return true;
@@ -92,22 +108,60 @@ export default function TripHarianPage() {
                 <h3 className="harian-title">{trip.title}</h3>
                 <p className="harian-desc">{trip.desc}</p>
 
-                <div className="harian-footer">
-                  <div>
+                <div className="harian-footer" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'stretch' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span className="harian-price-text">
                       {language === 'en' ? 'Starting from' : 'Mulai dari'}
                     </span>
-                    <span className="harian-price-val">{trip.price}</span>
+                    <span className="harian-price-val">{convertPriceString(trip.price)}</span>
                   </div>
-                  <a
-                    href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20tertarik%20dengan%20${encodeURIComponent(trip.title)}.%20Mohon%20info%20jadwal%20dan%20penjemputan.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-harian-link"
-                  >
-                    {language === 'en' ? 'Book via WA' : 'Pesan via WA'}{' '}
-                    <i className="fa fa-whatsapp"></i>
-                  </a>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenBooking(trip)}
+                      className="btn-harian-link"
+                      style={{
+                        background: 'var(--primary, #185a38)',
+                        color: '#ffffff',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '9px 10px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        boxShadow: '0 2px 6px rgba(24, 90, 56, 0.25)',
+                      }}
+                    >
+                      <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book Trip' : 'Booking'}
+                    </button>
+
+                    <a
+                      href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20tertarik%20dengan%20${encodeURIComponent(trip.title)}.%20Mohon%20info%20jadwal%20dan%20penjemputan.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-harian-link"
+                      style={{
+                        background: '#25d366',
+                        color: '#ffffff',
+                        textDecoration: 'none',
+                        padding: '9px 10px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <i className="fa fa-whatsapp"></i> Chat WA
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -148,6 +202,14 @@ export default function TripHarianPage() {
           </div>
         </div>
       </div>
+
+      {/* Integrated Customer Booking Modal */}
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        packageTitle={selectedTripForBooking.title}
+        packageSlug={selectedTripForBooking.slug}
+      />
     </div>
   );
 }

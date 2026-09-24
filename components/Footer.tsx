@@ -1,10 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function Footer() {
   const { language } = useLanguage();
+  const pathname = usePathname();
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <footer id="footer">
@@ -95,8 +101,13 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <div className="box1140">
-          <p>© 2026 Lombok_Travelers. All Rights Reserved. Local Travel Partner Tetebatu, Lombok Timur, NTB.</p>
+        <div className="box1140" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <p style={{ margin: 0 }}>© 2026 Lombok_Travelers. All Rights Reserved. Local Travel Partner Tetebatu, Lombok Timur, NTB.</p>
+          <div style={{ display: 'flex', gap: '16px', fontSize: '12px' }}>
+            <Link href="/admin/bookings" style={{ color: '#94a3b8', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <i className="fa fa-lock"></i> Owner / Admin Booking Portal
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

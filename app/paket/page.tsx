@@ -5,10 +5,14 @@ import Link from 'next/link';
 import packagesData from '@/data/packages.json';
 import { TourPackage } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import BookingModal from '@/components/BookingModal';
 
 export default function PaketPage() {
   const { language } = useLanguage();
   const packages: TourPackage[] = packagesData as TourPackage[];
+
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedPkgSlug, setSelectedPkgSlug] = useState<string>('');
 
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -190,16 +194,40 @@ export default function PaketPage() {
                     ))}
                   </div>
 
-                  <div className="package-card-footer">
+                  <div className="package-card-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                     <div className="price-box">
                       <span className="price-label">
                         {language === 'en' ? 'Starting from' : 'Mulai dari'}
                       </span>
                       <span className="price-value">{pkg.pricePlaceholder}</span>
                     </div>
-                    <Link href={`/paket/${pkg.slug}`} className="btn-detail">
-                      {language === 'en' ? 'View Details' : 'Lihat Detail'}
-                    </Link>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <Link href={`/paket/${pkg.slug}`} className="btn-detail">
+                        {language === 'en' ? 'Detail' : 'Detail'}
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedPkgSlug(pkg.slug);
+                          setBookingModalOpen(true);
+                        }}
+                        style={{
+                          background: 'var(--primary)',
+                          color: '#ffffff',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '6px 12px',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        <i className="fa fa-calendar-check-o"></i> Booking
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -232,6 +260,12 @@ export default function PaketPage() {
           </a>
         </div>
       </div>
+
+      <BookingModal
+        isOpen={bookingModalOpen}
+        onClose={() => setBookingModalOpen(false)}
+        defaultPackageSlug={selectedPkgSlug}
+      />
     </div>
   );
 }

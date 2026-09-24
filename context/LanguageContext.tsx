@@ -371,20 +371,31 @@ const translations: Record<Language, Translations> = {
   }
 };
 
+export type Currency = 'IDR' | 'USD';
+
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
+  currency: Currency;
+  setCurrency: (curr: Currency) => void;
+  formatPrice: (idrAmount: number) => string;
+  convertPriceString: (priceStr: string) => string;
   t: Translations;
 }
 
 const LanguageContext = createContext<LanguageContextType>({
   language: 'id',
   setLanguage: () => {},
+  currency: 'IDR',
+  setCurrency: () => {},
+  formatPrice: (amount) => `Rp ${amount.toLocaleString('id-ID')}`,
+  convertPriceString: (str) => str,
   t: translations.id
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('id');
+  const [currency, setCurrencyState] = useState<Currency>('IDR');
 
   useEffect(() => {
     try {
@@ -392,6 +403,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       if (savedLang === 'id' || savedLang === 'en') {
         setLanguageState(savedLang);
         document.documentElement.lang = savedLang;
+      }
+      const savedCurr = localStorage.getItem('lombok_currency') as Currency | null;
+      if (savedCurr === 'IDR' || savedCurr === 'USD') {
+        setCurrencyState(savedCurr);
       }
     } catch {
       // ignore SSR or storage exceptions
@@ -408,11 +423,43 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const setCurrency = (curr: Currency) => {
+    setCurrencyState(curr);
+    try {
+      localStorage.setItem('lombok_currency', curr);
+    } catch {
+      // ignore
+    }
+  };
+
+  // Kurs standar: $1 USD = ~Rp 15.800
+  const formatPrice = (idrAmount: number) => {
+    if (currency === 'USD') {
+      const usd = Math.round(idrAmount / 15800);
+      return `$${usd} USD`;
+    }
+    return `Rp ${idrAmount.toLocaleString('id-ID')}`;
+  };
+
+  const convertPriceString = (priceStr: string) => {
+    if (currency !== 'USD' || !priceStr) return priceStr;
+    // Extract numbers from string like "Rp 1.650.000 / pax"
+    const cleaned = priceStr.replace(/[^\d]/g, '');
+    const num = parseInt(cleaned, 10);
+    if (!num || isNaN(num)) return priceStr;
+    const usd = Math.round(num / 15800);
+    return priceStr.replace(/Rp\s*[\d.]+/i, `$${usd} USD`);
+  };
+
   return (
     <LanguageContext.Provider
       value={{
         language,
         setLanguage,
+        currency,
+        setCurrency,
+        formatPrice,
+        convertPriceString,
         t: translations[language]
       }}
     >

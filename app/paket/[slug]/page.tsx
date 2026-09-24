@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import packagesData from '@/data/packages.json';
 import { TourPackage } from '@/types';
 import GalleryThumbnails from '@/components/GalleryThumbnails';
+import BookingActionButtons from '@/components/BookingActionButtons';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -250,17 +251,10 @@ export default async function PackageDetailPage({ params }: PageProps) {
                 * <em>Harga dapat disesuaikan berdasarkan jumlah peserta, periode liburan (High/Peak Season Lebaran, Natal & Tahun Baru), serta preferensi hotel. Hubungi tim Lombok_Travelers untuk penawaran terbaik dan diskon khusus rombongan.</em>
               </p>
 
-              {/* Large WhatsApp Booking CTA Button */}
+              {/* Booking Action Buttons (Online Booking Form + WhatsApp) */}
               <div className="whatsapp-booking-cta">
-                <p><strong>Sudah punya rencana tanggal perjalanan?</strong> Hubungi kami langsung untuk mengecek ketersediaan armada, driver, dan diskon paket:</p>
-                <a
-                  href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20tertarik%20untuk%20pesan%20${encodeURIComponent(pkg.title)}.%20Mohon%20info%20penawaran%20harga%20dan%20ketersediaan.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-wa-booking-lg"
-                >
-                  <i className="fa fa-whatsapp" style={{ fontSize: '22px' }}></i> Pesan Paket Ini via WhatsApp
-                </a>
+                <p><strong>Sudah punya rencana tanggal perjalanan?</strong> Ajukan booking sekarang untuk mengamankan jadwal armada dan pemandu lokal kami:</p>
+                <BookingActionButtons packageSlug={pkg.slug} packageTitle={pkg.title} variant="inline" />
               </div>
             </div>
 
@@ -315,14 +309,7 @@ export default async function PackageDetailPage({ params }: PageProps) {
                 <li><i className="fa fa-check-circle"></i> Tiket Wisata & Parkir</li>
               </ul>
 
-              <a
-                href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20tanya%20booking%20${encodeURIComponent(pkg.title)}.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-sidebar-wa"
-              >
-                <i className="fa fa-whatsapp"></i> Booking via WhatsApp
-              </a>
+              <BookingActionButtons packageSlug={pkg.slug} packageTitle={pkg.title} variant="sidebar" />
 
               <div style={{ textAlign: 'center', marginTop: '14px' }}>
                 <span style={{ fontSize: '11.5px', color: 'var(--muted)' }}><i className="fa fa-lock"></i> Respon cepat dalam 5 - 15 menit</span>

@@ -1,19 +1,53 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CustomTripForm() {
+  const { language } = useLanguage();
+  const [nama, setNama] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
   const [tanggal, setTanggal] = useState('');
   const [peserta, setPeserta] = useState('2');
   const [pickup, setPickup] = useState('');
   const [durasi, setDurasi] = useState('3 Hari 2 Malam');
   const [destinasi, setDestinasi] = useState('');
   const [catatan, setCatatan] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    const message = `Halo Lombok_Travelers,%0A%0ASaya ingin konsultasi request *Custom Trip Lombok*:%0A- *Tanggal*: ${encodeURIComponent(tanggal || 'Belum ditentukan')}%0A- *Jumlah Peserta*: ${encodeURIComponent(peserta)} Orang%0A- *Lokasi Penjemputan*: ${encodeURIComponent(pickup || 'Bandara Lombok')}%0A- *Estimasi Durasi*: ${encodeURIComponent(durasi)}%0A- *Destinasi/Aktivitas*: ${encodeURIComponent(destinasi || 'Tetebatu, Sembalun, Gili')}%0A- *Catatan Khusus*: ${encodeURIComponent(catatan || '-')}%0A%0AMohon info rekomendasi itinerary dan penawaran harga terbaik. Terima kasih!`;
+    let bookingCode = '';
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name: nama || 'Tamu Custom Trip',
+          whatsapp: whatsapp,
+          package_name: `Custom Trip: ${destinasi || durasi}`,
+          package_id: 'custom-trip',
+          travel_date: tanggal || new Date().toISOString().split('T')[0],
+          participants: parseInt(peserta) || 2,
+          pickup_location: pickup || 'Bandara Lombok',
+          transportation: 'Innova / Avanza (Sesuai Rute Custom)',
+          notes: `[Durasi: ${durasi}] [Destinasi: ${destinasi}] ${catatan}`,
+          status: 'New Inquiry',
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.data?.booking_number) {
+        bookingCode = data.data.booking_number;
+      }
+    } catch (err) {
+      console.error('Error saving custom trip booking:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+
+    const message = `Halo Lombok_Travelers,%0A%0ASaya ingin konsultasi request *Custom Trip Lombok*${bookingCode ? ` (Kode Booking: *${bookingCode}*)` : ''}:%0A- *Nama*: ${encodeURIComponent(nama)}%0A- *WhatsApp*: ${encodeURIComponent(whatsapp)}%0A- *Tanggal*: ${encodeURIComponent(tanggal || 'Belum ditentukan')}%0A- *Jumlah Peserta*: ${encodeURIComponent(peserta)} Orang%0A- *Lokasi Penjemputan*: ${encodeURIComponent(pickup || 'Bandara Lombok')}%0A- *Estimasi Durasi*: ${encodeURIComponent(durasi)}%0A- *Destinasi/Aktivitas*: ${encodeURIComponent(destinasi || 'Tetebatu, Sembalun, Gili')}%0A- *Catatan Khusus*: ${encodeURIComponent(catatan || '-')}%0A%0AMohon info rekomendasi itinerary dan penawaran harga terbaik. Terima kasih!`;
 
     const waUrl = `https://wa.me/6283117110638?text=${message}`;
     window.open(waUrl, '_blank');
@@ -21,12 +55,43 @@ export default function CustomTripForm() {
 
   return (
     <div className="custom-form-card">
-      <h3>Formulir Request Custom Trip</h3>
+      <h3>{language === 'en' ? 'Custom Trip Inquiry Form' : 'Formulir Request Custom Trip'}</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-grid">
-          
           <div className="form-group">
-            <label htmlFor="customTanggal">Tanggal Perjalanan</label>
+            <label htmlFor="customNama">
+              {language === 'en' ? 'Full Name *' : 'Nama Pemesan *'}
+            </label>
+            <input
+              type="text"
+              id="customNama"
+              className="form-input"
+              placeholder={language === 'en' ? 'e.g. John Doe' : 'Contoh: Pak Budi Santoso'}
+              value={nama}
+              onChange={(e) => setNama(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="customWhatsapp">
+              {language === 'en' ? 'WhatsApp Number *' : 'Nomor WhatsApp Aktif *'}
+            </label>
+            <input
+              type="tel"
+              id="customWhatsapp"
+              className="form-input"
+              placeholder={language === 'en' ? '+62 / +1 ...' : '0812xxxxxxxx'}
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="customTanggal">
+              {language === 'en' ? 'Estimated Date *' : 'Tanggal Perjalanan *'}
+            </label>
             <input
               type="date"
               id="customTanggal"
@@ -38,13 +103,15 @@ export default function CustomTripForm() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="customPeserta">Jumlah Peserta (Pax)</label>
+            <label htmlFor="customPeserta">
+              {language === 'en' ? 'Number of Guests (Pax) *' : 'Jumlah Peserta (Pax) *'}
+            </label>
             <input
               type="number"
               id="customPeserta"
               className="form-input"
               min="1"
-              placeholder="Contoh: 4"
+              placeholder={language === 'en' ? 'e.g. 4' : 'Contoh: 4'}
               value={peserta}
               onChange={(e) => setPeserta(e.target.value)}
               required
@@ -52,12 +119,14 @@ export default function CustomTripForm() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="customPickup">Lokasi Pickup</label>
+            <label htmlFor="customPickup">
+              {language === 'en' ? 'Pick-up Location *' : 'Lokasi Pickup *'}
+            </label>
             <input
               type="text"
               id="customPickup"
               className="form-input"
-              placeholder="Bandara Lombok / Hotel Senggigi / dll"
+              placeholder={language === 'en' ? 'Lombok Airport / Hotel / Harbor' : 'Bandara Lombok / Hotel Senggigi / dll'}
               value={pickup}
               onChange={(e) => setPickup(e.target.value)}
               required
@@ -65,40 +134,46 @@ export default function CustomTripForm() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="customDurasi">Durasi Perjalanan</label>
+            <label htmlFor="customDurasi">
+              {language === 'en' ? 'Estimated Duration' : 'Durasi Perjalanan'}
+            </label>
             <select
               id="customDurasi"
               className="form-select"
               value={durasi}
               onChange={(e) => setDurasi(e.target.value)}
             >
-              <option value="1 Hari (Full Day)">1 Hari (Full Day)</option>
-              <option value="2 Hari 1 Malam">2 Hari 1 Malam</option>
-              <option value="3 Hari 2 Malam">3 Hari 2 Malam</option>
-              <option value="4 Hari 3 Malam">4 Hari 3 Malam</option>
-              <option value="5 Hari 4 Malam">5 Hari 4 Malam</option>
-              <option value="Lebih dari 5 Hari">Lebih dari 5 Hari</option>
+              <option value="1 Hari (Full Day)">{language === 'en' ? '1 Day (Full Day)' : '1 Hari (Full Day)'}</option>
+              <option value="2 Hari 1 Malam">{language === 'en' ? '2 Days 1 Night' : '2 Hari 1 Malam'}</option>
+              <option value="3 Hari 2 Malam">{language === 'en' ? '3 Days 2 Nights' : '3 Hari 2 Malam'}</option>
+              <option value="4 Hari 3 Malam">{language === 'en' ? '4 Days 3 Nights' : '4 Hari 3 Malam'}</option>
+              <option value="5 Hari 4 Malam">{language === 'en' ? '5 Days 4 Nights' : '5 Hari 4 Malam'}</option>
+              <option value="Lebih dari 5 Hari">{language === 'en' ? 'More than 5 Days' : 'Lebih dari 5 Hari'}</option>
             </select>
           </div>
 
           <div className="form-group col-span-2">
-            <label htmlFor="customDestinasi">Destinasi yang Diminati</label>
+            <label htmlFor="customDestinasi">
+              {language === 'en' ? 'Preferred Destinations / Activities' : 'Destinasi yang Diminati'}
+            </label>
             <input
               type="text"
               id="customDestinasi"
               className="form-input"
-              placeholder="Contoh: Tetebatu, Gili Trawangan, Mandalika, Sembalun"
+              placeholder={language === 'en' ? 'e.g. Tetebatu, Gili Trawangan, Mandalika, Sembalun' : 'Contoh: Tetebatu, Gili Trawangan, Mandalika, Sembalun'}
               value={destinasi}
               onChange={(e) => setDestinasi(e.target.value)}
             />
           </div>
 
           <div className="form-group col-span-2">
-            <label htmlFor="customCatatan">Catatan / Kebutuhan Khusus</label>
+            <label htmlFor="customCatatan">
+              {language === 'en' ? 'Special Notes / Requests' : 'Catatan / Kebutuhan Khusus'}
+            </label>
             <textarea
               id="customCatatan"
               className="form-textarea"
-              placeholder="Contoh: Ada anak kecil, minta rekomendasi kuliner halal khas Sasak, hotel bintang 3..."
+              placeholder={language === 'en' ? 'e.g. Traveling with toddlers, halal culinary requests, 3-star hotel recommendation...' : 'Contoh: Ada anak kecil, minta rekomendasi kuliner halal khas Sasak, hotel bintang 3...'}
               value={catatan}
               onChange={(e) => setCatatan(e.target.value)}
             ></textarea>
@@ -106,8 +181,11 @@ export default function CustomTripForm() {
 
         </div>
 
-        <button type="submit" className="btn-submit-custom">
-          <i className="fa fa-whatsapp" style={{ fontSize: '18px' }}></i> Request Custom Trip via WhatsApp
+        <button type="submit" className="btn-submit-custom" disabled={isSubmitting}>
+          <i className={`fa ${isSubmitting ? 'fa-spinner fa-spin' : 'fa-whatsapp'}`} style={{ fontSize: '18px' }}></i>
+          {isSubmitting
+            ? (language === 'en' ? ' Saving Inquiry...' : ' Menyimpan Reservasi...')
+            : (language === 'en' ? ' Request Custom Trip via WhatsApp' : ' Request Custom Trip via WhatsApp')}
         </button>
       </form>
     </div>

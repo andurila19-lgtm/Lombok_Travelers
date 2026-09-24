@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
+import BookingModal from '@/components/BookingModal';
 
 interface Vehicle {
   id: string;
@@ -79,8 +80,20 @@ const vehicles: Vehicle[] = [
 ];
 
 export default function TransportPage() {
-  const { language } = useLanguage();
+  const { language, convertPriceString } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // Booking Modal State
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedVehicleForBooking, setSelectedVehicleForBooking] = useState<{ title: string; slug: string }>({
+    title: '',
+    slug: '',
+  });
+
+  const handleOpenBooking = (title: string, slug: string) => {
+    setSelectedVehicleForBooking({ title, slug });
+    setIsBookingOpen(true);
+  };
 
   const filteredVehicles = vehicles.filter((v) => {
     if (selectedCategory === 'all') return true;
@@ -163,18 +176,50 @@ export default function TransportPage() {
                   ))}
                 </ul>
 
-                <div className="fleet-footer">
+                <div className="fleet-footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'stretch' }}>
                   <div className="fleet-price">
-                    <span className="fleet-price-tag">{car.pricePerDay}</span>
+                    <span className="fleet-price-tag">{convertPriceString(car.pricePerDay)}</span>
                   </div>
-                  <a
-                    href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20sewa%20mobil%20${encodeURIComponent(car.name)}.%20Mohon%20info%20ketersediaan.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-rent-wa"
-                  >
-                    <i className="fa fa-whatsapp"></i> {language === 'en' ? 'Book Now' : 'Sewa Sekarang'}
-                  </a>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenBooking(`Sewa Mobil ${car.name}`, `sewa-${car.id}`)}
+                      style={{
+                        background: 'var(--primary, #185a38)',
+                        color: '#ffffff',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '8px 10px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
+                    </button>
+
+                    <a
+                      href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20sewa%20mobil%20${encodeURIComponent(car.name)}.%20Mohon%20info%20ketersediaan.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-rent-wa"
+                      style={{
+                        padding: '8px 10px',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      <i className="fa fa-whatsapp"></i> Chat WA
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -241,8 +286,39 @@ export default function TransportPage() {
               </tr>
             </tbody>
           </table>
+
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <button
+              type="button"
+              onClick={() => handleOpenBooking('Antar-Jemput Bandara BIL Lombok', 'transfer-bandara-bil')}
+              style={{
+                background: 'var(--primary, #185a38)',
+                color: '#ffffff',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 12px rgba(24, 90, 56, 0.25)',
+              }}
+            >
+              <i className="fa fa-calendar-check-o"></i> Reservasi Antar-Jemput Bandara Sekarang
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Integrated Customer Booking Modal */}
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        packageTitle={selectedVehicleForBooking.title}
+        packageSlug={selectedVehicleForBooking.slug}
+      />
     </div>
   );
 }

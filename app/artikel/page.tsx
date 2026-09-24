@@ -187,14 +187,34 @@ export default function ArtikelPage() {
                 </div>
                 <h2 className="article-title">{art.title}</h2>
                 <p className="article-excerpt">{art.excerpt}</p>
-                <button
-                  type="button"
-                  onClick={() => setActiveArticle(art)}
-                  className="btn-read-more"
-                >
-                  {language === 'en' ? 'Read Full Guide' : 'Baca Selengkapnya'}{' '}
-                  <i className="fa fa-angle-right"></i>
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '14px' }}>
+                  <Link
+                    href={`/artikel/${art.id}`}
+                    className="btn-read-more"
+                    style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    {language === 'en' ? 'Read Full Guide' : 'Baca Selengkapnya'}{' '}
+                    <i className="fa fa-angle-right"></i>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveArticle(art)}
+                    style={{
+                      background: 'none',
+                      border: '1px solid #cbd5e1',
+                      color: '#475569',
+                      padding: '8px 12px',
+                      borderRadius: '6px',
+                      fontSize: '12.5px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                    title="Preview Cepat"
+                  >
+                    <i className="fa fa-eye"></i> Quick View
+                  </button>
+                </div>
               </div>
             </article>
           ))}
