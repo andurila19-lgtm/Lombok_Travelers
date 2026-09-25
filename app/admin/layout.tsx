@@ -44,12 +44,11 @@ export default function AdminLayout({
     }
   };
 
-  // If this is the login page, render children directly without admin layout wrapper
-  if (pathname === '/admin/login' || pathname.startsWith('/admin/login')) {
-    return <>{children}</>;
-  }
+  const isLoginPage = pathname === '/admin/login' || pathname.startsWith('/admin/login');
 
   useEffect(() => {
+    if (isLoginPage) return;
+
     // Check session with server API
     fetch('/api/auth/me')
       .then((res) => {
@@ -69,11 +68,11 @@ export default function AdminLayout({
       .finally(() => {
         setAuthChecked(true);
       });
-  }, [pathname]);
+  }, [pathname, isLoginPage]);
 
   // Realtime Polling for new bookings (runs every 20s)
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (isLoginPage || !isAuthenticated) return;
 
     const interval = setInterval(async () => {
       try {
@@ -98,7 +97,7 @@ export default function AdminLayout({
     }, 20000);
 
     return () => clearInterval(interval);
-  }, [isAuthenticated, knownBookingCount]);
+  }, [isLoginPage, isAuthenticated, knownBookingCount]);
 
   const handleLogout = async () => {
     try {
@@ -150,6 +149,11 @@ export default function AdminLayout({
       exact: false,
     },
   ];
+
+  // If this is the login page, render children directly without admin layout wrapper
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   // While verifying session, render a sleek loading state
   if (!authChecked || !isAuthenticated) {

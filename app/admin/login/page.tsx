@@ -44,8 +44,7 @@ function LoginForm() {
       }
 
       // Successful login -> Navigate to admin dashboard
-      router.push(redirectTarget);
-      router.refresh();
+      window.location.href = redirectTarget;
     } catch {
       setErrorMsg('Gagal menghubungi server. Periksa koneksi internet Anda.');
     } finally {
