@@ -76,7 +76,10 @@ export default function CustomTripForm() {
       setIsSubmitting(false);
     }
 
-    const message = `Halo Lombok_Travelers,\n\nSaya ingin konfirmasi booking:\n\nNo. Booking: ${bookingCode || 'LT-CUSTOM'}\nNama: ${nama.trim()}\nPaket: Custom Trip (${destinasi || durasi})\nTanggal: ${tanggal || 'Sesuai Diskusi'}\nPeserta: ${paxNum} Orang\nPickup: ${pickup.trim() || 'Bandara Lombok'}\n\nMohon konfirmasi ketersediaannya.`;
+    const isEn = language === 'en';
+    const message = isEn
+      ? `Hello Lombok_Travelers,\n\nI would like to submit a Custom Trip Inquiry:\n\nBooking Ref: ${bookingCode || 'LT-CUSTOM'}\nName: ${nama.trim()}\nPlan: Custom Trip (${destinasi || durasi})\nDate: ${tanggal || 'To be discussed'}\nGuests: ${paxNum} Pax\nPick-up: ${pickup.trim() || 'Lombok Airport'}\n${catatan ? `Notes: ${catatan.trim()}\n` : ''}\nPlease confirm availability and quote.`
+      : `Halo Lombok_Travelers,\n\nSaya ingin konfirmasi booking:\n\nNo. Booking: ${bookingCode || 'LT-CUSTOM'}\nNama: ${nama.trim()}\nPaket: Custom Trip (${destinasi || durasi})\nTanggal: ${tanggal || 'Sesuai Diskusi'}\nPeserta: ${paxNum} Orang\nPickup: ${pickup.trim() || 'Bandara Lombok'}\n${catatan ? `Catatan: ${catatan.trim()}\n` : ''}\nMohon konfirmasi ketersediaannya.`;
 
     const waUrl = `https://wa.me/6283117110638?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');

@@ -48,12 +48,12 @@ export default function Footer() {
             <h3>{language === 'en' ? 'Tour Packages' : 'Paket Wisata'}</h3>
             <div className="footer-links">
               <Link href="/paket">{language === 'en' ? '› All Tour Packages' : '› Semua Paket Tour'}</Link>
-              <Link href="/paket/paket-lombok-3-hari-2-malam">Paket Lombok 3H2M</Link>
-              <Link href="/paket/paket-lombok-2-hari-1-malam">Paket Lombok 2H1M</Link>
-              <Link href="/paket/paket-lombok-4-hari-3-malam">Paket Lombok 4H3M</Link>
-              <Link href="/paket/paket-lombok-5-hari-4-malam">Paket Lombok 5H4M</Link>
-              <Link href="/paket/private-lombok-honeymoon-trip">Private Honeymoon</Link>
-              <Link href="/paket/tetebatu-nature-cultural-immersion">Tetebatu Cultural</Link>
+              <Link href="/paket/paket-lombok-3-hari-2-malam">{language === 'en' ? 'Lombok 3D2N Package' : 'Paket Lombok 3H2M'}</Link>
+              <Link href="/paket/paket-lombok-2-hari-1-malam">{language === 'en' ? 'Lombok 2D1N Package' : 'Paket Lombok 2H1M'}</Link>
+              <Link href="/paket/paket-lombok-4-hari-3-malam">{language === 'en' ? 'Lombok 4D3N Package' : 'Paket Lombok 4H3M'}</Link>
+              <Link href="/paket/paket-lombok-5-hari-4-malam">{language === 'en' ? 'Lombok 5D4N Package' : 'Paket Lombok 5H4M'}</Link>
+              <Link href="/paket/private-lombok-honeymoon-trip">{language === 'en' ? 'Private Honeymoon' : 'Private Honeymoon'}</Link>
+              <Link href="/paket/tetebatu-nature-cultural-immersion">{language === 'en' ? 'Tetebatu Cultural' : 'Tetebatu Cultural'}</Link>
             </div>
           </div>
 
@@ -79,7 +79,7 @@ export default function Footer() {
               <Link href="/transport">Toyota Innova Reborn</Link>
               <Link href="/transport">Toyota HiAce Commuter</Link>
               <Link href="/transport">Toyota Fortuner VRZ</Link>
-              <Link href="/transport">Antar-Jemput Bandara BIL</Link>
+              <Link href="/transport">{language === 'en' ? 'Airport Transfer (BIL)' : 'Antar-Jemput Bandara BIL'}</Link>
             </div>
           </div>
 

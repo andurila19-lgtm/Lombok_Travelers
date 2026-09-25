@@ -5,11 +5,14 @@ import Link from 'next/link';
 import dailyTripsData from '@/data/dailyTrips.json';
 import { DailyTrip } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import { getLocalizedTrip } from '@/lib/localization';
 import BookingModal from '@/components/BookingModal';
 
 export default function TripHarianPage() {
-  const { language, convertPriceString } = useLanguage();
-  const trips: DailyTrip[] = dailyTripsData as DailyTrip[];
+  const { language, t, convertPriceString } = useLanguage();
+  const rawTrips: DailyTrip[] = dailyTripsData as DailyTrip[];
+  const trips = rawTrips.map((tr) => getLocalizedTrip(tr, language));
+
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
 
   // Booking Modal State
@@ -27,12 +30,13 @@ export default function TripHarianPage() {
     setIsBookingOpen(true);
   };
 
-  const filteredTrips = trips.filter((t) => {
+  const filteredTrips = trips.filter((tItem) => {
     if (selectedRegion === 'all') return true;
-    if (selectedRegion === 'gili') return t.title.toLowerCase().includes('gili');
-    if (selectedRegion === 'kuta') return t.title.toLowerCase().includes('mandalika') || t.title.toLowerCase().includes('selatan') || t.title.toLowerCase().includes('sasak');
-    if (selectedRegion === 'tetebatu') return t.title.toLowerCase().includes('tetebatu') || t.title.toLowerCase().includes('pink');
-    if (selectedRegion === 'rinjani') return t.title.toLowerCase().includes('senaru') || t.title.toLowerCase().includes('sembalun');
+    const lower = (tItem.title + ' ' + tItem.desc).toLowerCase();
+    if (selectedRegion === 'gili') return lower.includes('gili');
+    if (selectedRegion === 'kuta') return lower.includes('mandalika') || lower.includes('selatan') || lower.includes('south') || lower.includes('sasak');
+    if (selectedRegion === 'tetebatu') return lower.includes('tetebatu') || lower.includes('pink');
+    if (selectedRegion === 'rinjani') return lower.includes('senaru') || lower.includes('sembalun') || lower.includes('rinjani');
     return true;
   });
 
@@ -78,7 +82,7 @@ export default function TripHarianPage() {
             className={`tab-btn ${selectedRegion === 'kuta' ? 'active' : ''}`}
             onClick={() => setSelectedRegion('kuta')}
           >
-            Kuta & Pantai Selatan
+            {language === 'en' ? 'Kuta & South Coast' : 'Kuta & Pantai Selatan'}
           </button>
           <button
             className={`tab-btn ${selectedRegion === 'tetebatu' ? 'active' : ''}`}
@@ -111,7 +115,7 @@ export default function TripHarianPage() {
                 <div className="harian-footer" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'stretch' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span className="harian-price-text">
-                      {language === 'en' ? 'Starting from' : 'Mulai dari'}
+                      {t.packages.perPerson}
                     </span>
                     <span className="harian-price-val">{convertPriceString(trip.price)}</span>
                   </div>
@@ -122,7 +126,7 @@ export default function TripHarianPage() {
                       onClick={() => handleOpenBooking(trip)}
                       className="btn-card-primary"
                     >
-                      <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
+                      <i className="fa fa-calendar-check-o"></i> {t.buttons.book}
                     </button>
 
                     <a
@@ -131,7 +135,7 @@ export default function TripHarianPage() {
                       rel="noopener noreferrer"
                       className="btn-card-secondary"
                     >
-                      <i className="fa fa-whatsapp"></i> Chat WA
+                      <i className="fa fa-whatsapp"></i> {t.buttons.chatWa}
                     </a>
                   </div>
                 </div>

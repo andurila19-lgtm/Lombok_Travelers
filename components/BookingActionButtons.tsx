@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import BookingModal from './BookingModal';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface BookingActionButtonsProps {
   packageSlug: string;
@@ -15,8 +16,12 @@ export default function BookingActionButtons({
   variant = 'sidebar',
 }: BookingActionButtonsProps) {
   const [modalOpen, setModalOpen] = useState(false);
+  const { language, t } = useLanguage();
 
-  const waText = `Halo Lombok_Travelers, saya ingin konsultasi booking ${packageTitle}.`;
+  const isEn = language === 'en';
+  const waText = isEn
+    ? `Hello Lombok_Travelers, I would like to consult about booking ${packageTitle}.`
+    : `Halo Lombok_Travelers, saya ingin konsultasi booking ${packageTitle}.`;
   const waUrl = `https://wa.me/6283117110638?text=${encodeURIComponent(waText)}`;
 
   if (variant === 'card') {
@@ -41,7 +46,7 @@ export default function BookingActionButtons({
             transition: 'background 0.2s ease',
           }}
         >
-          <i className="fa fa-calendar-check-o"></i> Booking
+          <i className="fa fa-calendar-check-o"></i> {t.buttons.book}
         </button>
 
         <BookingModal
@@ -79,7 +84,7 @@ export default function BookingActionButtons({
               transition: 'all 0.2s ease',
             }}
           >
-            <i className="fa fa-calendar-check-o" style={{ fontSize: '15px' }}></i> Booking Sekarang
+            <i className="fa fa-calendar-check-o" style={{ fontSize: '15px' }}></i> {t.buttons.bookNow}
           </button>
 
           <a
@@ -102,7 +107,7 @@ export default function BookingActionButtons({
               boxShadow: '0 3px 10px rgba(37, 211, 102, 0.2)',
             }}
           >
-            <i className="fa fa-whatsapp" style={{ fontSize: '16px' }}></i> Chat via WhatsApp
+            <i className="fa fa-whatsapp" style={{ fontSize: '16px' }}></i> {t.buttons.chatWa}
           </a>
         </div>
 
@@ -140,7 +145,7 @@ export default function BookingActionButtons({
             transition: 'background 0.2s ease',
           }}
         >
-          <i className="fa fa-calendar-check-o"></i> Booking Sekarang
+          <i className="fa fa-calendar-check-o"></i> {t.buttons.bookNow}
         </button>
 
         <a
@@ -156,7 +161,7 @@ export default function BookingActionButtons({
             gap: '8px',
           }}
         >
-          <i className="fa fa-whatsapp"></i> Chat WhatsApp
+          <i className="fa fa-whatsapp"></i> {t.buttons.chatWa}
         </a>
       </div>
 

@@ -12,11 +12,13 @@ import ConciergeTrigger from '@/components/ConciergeTrigger';
 import FaqSection, { faqsData } from '@/components/FaqSection';
 import BookingModal from '@/components/BookingModal';
 import { useLanguage } from '@/context/LanguageContext';
+import { getLocalizedTrip } from '@/lib/localization';
 
 export default function HomePage() {
   const { language, t, convertPriceString } = useLanguage();
   const packages: TourPackage[] = packagesData as TourPackage[];
-  const trips: DailyTrip[] = dailyTrips as DailyTrip[];
+  const rawTrips: DailyTrip[] = dailyTrips as DailyTrip[];
+  const trips = rawTrips.map((tr) => getLocalizedTrip(tr, language));
 
   // State for Transport Vehicle Booking Modal
   const [isVehicleBookingOpen, setIsVehicleBookingOpen] = useState(false);
@@ -243,16 +245,16 @@ export default function HomePage() {
                   <div className="harian-footer">
                     <div>
                       <span className="harian-price-text">
-                        {language === 'en' ? 'Starting from' : 'Mulai dari'}
+                        {t.packages.perPerson}
                       </span>
-                      <span className="harian-price-val">{trip.price}</span>
+                      <span className="harian-price-val">{convertPriceString(trip.price)}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                       <Link
                         href="/trip-harian"
                         className="btn-card-secondary"
                       >
-                        {language === 'en' ? 'Detail' : 'Detail'}
+                        {t.buttons.detail}
                       </Link>
                       <a
                         href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20tanya%20Trip%20Harian:%20${encodeURIComponent(trip.title)}.`}
@@ -260,7 +262,7 @@ export default function HomePage() {
                         rel="noopener noreferrer"
                         className="btn-card-primary"
                       >
-                        <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
+                        <i className="fa fa-calendar-check-o"></i> {t.buttons.book}
                       </a>
                     </div>
                   </div>
@@ -412,7 +414,7 @@ export default function HomePage() {
               <div key={car.id} className="home-fleet-card">
                 <div className="home-fleet-img-box">
                   <img src={car.image} alt={car.name} loading="lazy" />
-                  <span className="home-fleet-badge-top">All-In Driver & BBM</span>
+                  <span className="home-fleet-badge-top">{language === 'en' ? 'All-In Driver & Fuel' : 'All-In Driver & BBM'}</span>
                   <span className={car.badgeClass}>{car.badge}</span>
                 </div>
 

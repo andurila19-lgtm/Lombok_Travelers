@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import AiConciergeModal from './AiConciergeModal';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function ConciergeTrigger() {
   const [modalOpen, setModalOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <>
@@ -13,11 +15,11 @@ export default function ConciergeTrigger() {
           <div className="concierge-banner">
             <div className="concierge-left">
               <span className="concierge-tag">
-                <i className="fa fa-lightbulb-o"></i> Butuh Bantuan Memilih?
+                <i className="fa fa-lightbulb-o"></i> {t.concierge?.tag || 'Butuh Bantuan Memilih?'}
               </span>
-              <h3>Masih Bingung Memilih Paket?</h3>
+              <h3>{t.concierge?.bannerTitle || 'Masih Bingung Memilih Paket?'}</h3>
               <p>
-                Ceritakan kebutuhan perjalanan Anda, kami bantu menemukan paket yang paling sesuai dengan durasi, peserta, dan preferensi liburan Anda.
+                {t.concierge?.bannerDesc || 'Ceritakan kebutuhan perjalanan Anda, kami bantu menemukan paket yang paling sesuai dengan durasi, peserta, dan preferensi liburan Anda.'}
               </p>
             </div>
             <div>
@@ -25,7 +27,7 @@ export default function ConciergeTrigger() {
                 className="btn-concierge"
                 onClick={() => setModalOpen(true)}
               >
-                <i className="fa fa-compass" style={{ color: 'var(--primary)' }}></i> Chat dengan Travel Assistant
+                <i className="fa fa-compass" style={{ color: 'var(--primary)' }}></i> {t.concierge?.bannerBtn || 'Chat dengan Travel Assistant'}
               </button>
             </div>
           </div>

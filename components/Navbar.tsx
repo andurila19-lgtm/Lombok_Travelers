@@ -53,22 +53,22 @@ export default function Navbar() {
                 </Link>
                 <div style={{ height: '1px', background: '#eee', margin: '4px 0' }}></div>
                 <Link href="/paket/paket-lombok-3-hari-2-malam" className="dropdown-link">
-                  Paket Lombok 3H2M (Best Seller)
+                  {language === 'en' ? 'Lombok 3D2N Package (Best Seller)' : 'Paket Lombok 3H2M (Best Seller)'}
                 </Link>
                 <Link href="/paket/paket-lombok-2-hari-1-malam" className="dropdown-link">
-                  Paket Lombok 2H1M
+                  {language === 'en' ? 'Lombok 2D1N Package' : 'Paket Lombok 2H1M'}
                 </Link>
                 <Link href="/paket/paket-lombok-4-hari-3-malam" className="dropdown-link">
-                  Paket Lombok 4H3M
+                  {language === 'en' ? 'Lombok 4D3N Package' : 'Paket Lombok 4H3M'}
                 </Link>
                 <Link href="/paket/paket-lombok-5-hari-4-malam" className="dropdown-link">
-                  Paket Lombok 5H4M
+                  {language === 'en' ? 'Lombok 5D4N Package' : 'Paket Lombok 5H4M'}
                 </Link>
                 <Link href="/paket/private-lombok-honeymoon-trip" className="dropdown-link">
-                  Private Honeymoon
+                  {language === 'en' ? 'Private Romantic Honeymoon' : 'Private Honeymoon'}
                 </Link>
                 <Link href="/paket/tetebatu-nature-cultural-immersion" className="dropdown-link">
-                  Tetebatu Cultural Tour
+                  {language === 'en' ? 'Tetebatu Cultural Tour' : 'Tetebatu Cultural Tour'}
                 </Link>
               </div>
             </div>
@@ -258,7 +258,7 @@ export default function Navbar() {
             {/* Mobile Language Selector */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
               <div style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>
-                <i className="fa fa-globe"></i> Bahasa:
+                <i className="fa fa-globe"></i> {language === 'en' ? 'Language:' : 'Bahasa:'}
               </div>
               <div style={{ display: 'inline-flex', background: '#f1f5f9', borderRadius: '16px', padding: '2px', border: '1px solid #cbd5e1' }}>
                 <button

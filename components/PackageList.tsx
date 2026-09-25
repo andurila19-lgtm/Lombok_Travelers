@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { TourPackage } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import { getLocalizedPackage } from '@/lib/localization';
 import BookingModal from '@/components/BookingModal';
 
 interface PackageListProps {
@@ -16,7 +17,9 @@ export default function PackageList({ packages }: PackageListProps) {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedPkgSlug, setSelectedPkgSlug] = useState<string>('');
 
-  const filteredPackages = packages.filter((pkg) => {
+  const localizedPackages = packages.map((p) => getLocalizedPackage(p, language));
+
+  const filteredPackages = localizedPackages.filter((pkg) => {
     if (filter === 'all') return true;
     return pkg.category.toLowerCase().includes(filter.toLowerCase());
   });
@@ -41,7 +44,7 @@ export default function PackageList({ packages }: PackageListProps) {
           className={`tab-btn ${filter === 'private' ? 'active' : ''}`}
           onClick={() => setFilter('private')}
         >
-          Private Trip
+          {language === 'en' ? 'Private Trips' : 'Private Trip'}
         </button>
         <button
           className={`tab-btn ${filter === 'honeymoon' ? 'active' : ''}`}
@@ -90,7 +93,7 @@ export default function PackageList({ packages }: PackageListProps) {
                 </div>
                 <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                   <Link href={`/paket/${pkg.slug}`} className="btn-card-secondary">
-                    {language === 'en' ? 'Detail' : 'Detail'}
+                    {t.buttons.detail}
                   </Link>
                   <button
                     type="button"
@@ -100,7 +103,7 @@ export default function PackageList({ packages }: PackageListProps) {
                     }}
                     className="btn-card-primary"
                   >
-                    <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
+                    <i className="fa fa-calendar-check-o"></i> {t.buttons.book}
                   </button>
                 </div>
               </div>

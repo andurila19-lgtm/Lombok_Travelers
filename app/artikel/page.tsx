@@ -149,25 +149,25 @@ export default function ArtikelPage() {
             className={`tab-btn ${selectedCat === 'tips' ? 'active' : ''}`}
             onClick={() => setSelectedCat('tips')}
           >
-            Tips Traveling
+            {language === 'en' ? 'Travel Tips' : 'Tips Traveling'}
           </button>
           <button
             className={`tab-btn ${selectedCat === 'destinasi' ? 'active' : ''}`}
             onClick={() => setSelectedCat('destinasi')}
           >
-            Destinasi
+            {language === 'en' ? 'Destinations' : 'Destinasi'}
           </button>
           <button
             className={`tab-btn ${selectedCat === 'rinjani' ? 'active' : ''}`}
             onClick={() => setSelectedCat('rinjani')}
           >
-            Rinjani & Trekking
+            {language === 'en' ? 'Rinjani & Trekking' : 'Rinjani & Trekking'}
           </button>
           <button
             className={`tab-btn ${selectedCat === 'kuliner' ? 'active' : ''}`}
             onClick={() => setSelectedCat('kuliner')}
           >
-            Kuliner Sasak
+            {language === 'en' ? 'Sasak Culinary' : 'Kuliner Sasak'}
           </button>
         </div>
 

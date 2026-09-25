@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export default function SearchBar() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [kategori, setKategori] = useState('semua');
   const [destinasi, setDestinasi] = useState('semua');
   const [durasi, setDurasi] = useState('semua');
@@ -62,13 +62,13 @@ export default function SearchBar() {
               onChange={(e) => setDestinasi(e.target.value)}
             >
               <option value="semua">{t.search.allDest}</option>
-              <option value="Tetebatu">Tetebatu & Lembah Rinjani</option>
-              <option value="Gili Trawangan">Gili Trawangan & 3 Gili</option>
-              <option value="Kuta Mandalika">Kuta Mandalika & Merese</option>
-              <option value="Sembalun">Lembah Sembalun</option>
-              <option value="Pink Beach">Pink Beach Lombok</option>
-              <option value="Gili Nanggu">Gili Nanggu Secret Islands</option>
-              <option value="Senaru">Air Terjun Senaru & Tiu Kelep</option>
+              <option value="Tetebatu">{language === 'en' ? 'Tetebatu & Rinjani Foothills' : 'Tetebatu & Lembah Rinjani'}</option>
+              <option value="Gili Trawangan">{language === 'en' ? 'Gili Trawangan & 3 Gilis' : 'Gili Trawangan & 3 Gili'}</option>
+              <option value="Kuta Mandalika">{language === 'en' ? 'Kuta Mandalika & Merese Hill' : 'Kuta Mandalika & Merese'}</option>
+              <option value="Sembalun">{language === 'en' ? 'Sembalun Highlands' : 'Lembah Sembalun'}</option>
+              <option value="Pink Beach">{language === 'en' ? 'Pink Beach Lombok' : 'Pink Beach Lombok'}</option>
+              <option value="Gili Nanggu">{language === 'en' ? 'Gili Nanggu Secret Islands' : 'Gili Nanggu Secret Islands'}</option>
+              <option value="Senaru">{language === 'en' ? 'Senaru Waterfalls & Tiu Kelep' : 'Air Terjun Senaru & Tiu Kelep'}</option>
             </select>
           </div>
 

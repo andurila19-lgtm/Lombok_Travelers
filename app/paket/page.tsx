@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import packagesData from '@/data/packages.json';
 import { TourPackage } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import { getLocalizedPackage } from '@/lib/localization';
 import BookingModal from '@/components/BookingModal';
 
 function SearchParamSync({
@@ -43,8 +44,8 @@ function SearchParamSync({
 }
 
 export default function PaketPage() {
-  const { language, convertPriceString } = useLanguage();
-  const packages: TourPackage[] = packagesData as TourPackage[];
+  const { language, t, convertPriceString } = useLanguage();
+  const rawPackages: TourPackage[] = packagesData as TourPackage[];
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedPkgSlug, setSelectedPkgSlug] = useState<string>('');
@@ -52,6 +53,8 @@ export default function PaketPage() {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [durationFilter, setDurationFilter] = useState<string>('all');
+
+  const packages = rawPackages.map((p) => getLocalizedPackage(p, language));
 
   const filteredPackages = packages.filter((pkg) => {
     const matchesCat =
@@ -63,7 +66,12 @@ export default function PaketPage() {
       pkg.shortDesc.toLowerCase().includes(searchQuery.toLowerCase()) ||
       pkg.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesDur =
-      durationFilter === 'all' || pkg.duration.includes(durationFilter);
+      durationFilter === 'all' ||
+      pkg.duration.includes(durationFilter) ||
+      (durationFilter.includes('2') && pkg.duration.includes('2')) ||
+      (durationFilter.includes('3') && pkg.duration.includes('3')) ||
+      (durationFilter.includes('4') && pkg.duration.includes('4')) ||
+      (durationFilter.includes('5') && pkg.duration.includes('5'));
 
     return matchesCat && matchesQuery && matchesDur;
   });
@@ -141,10 +149,18 @@ export default function PaketPage() {
               <option value="all">
                 {language === 'en' ? 'All Durations' : 'Semua Durasi'}
               </option>
-              <option value="2 Hari 1 Malam">2 Hari 1 Malam (2D1N)</option>
-              <option value="3 Hari 2 Malam">3 Hari 2 Malam (3D2N)</option>
-              <option value="4 Hari 3 Malam">4 Hari 3 Malam (4D3N)</option>
-              <option value="5 Hari 4 Malam">5 Hari 4 Malam (5D4N)</option>
+              <option value="2">
+                {language === 'en' ? '2 Days 1 Night (2D1N)' : '2 Hari 1 Malam (2H1M)'}
+              </option>
+              <option value="3">
+                {language === 'en' ? '3 Days 2 Nights (3D2N)' : '3 Hari 2 Malam (3H2M)'}
+              </option>
+              <option value="4">
+                {language === 'en' ? '4 Days 3 Nights (4D3N)' : '4 Hari 3 Malam (4H3M)'}
+              </option>
+              <option value="5">
+                {language === 'en' ? '5 Days 4 Nights (5D4N)' : '5 Hari 4 Malam (5H4M)'}
+              </option>
             </select>
           </div>
         </div>
@@ -161,25 +177,25 @@ export default function PaketPage() {
             className={`tab-btn ${filterCategory === 'lombok' ? 'active' : ''}`}
             onClick={() => setFilterCategory('lombok')}
           >
-            Multi-Day (2H1M - 5H4M)
+            {language === 'en' ? 'Multi-Day (2D1N - 5D4N)' : 'Multi-Day (2H1M - 5H4M)'}
           </button>
           <button
             className={`tab-btn ${filterCategory === 'private' ? 'active' : ''}`}
             onClick={() => setFilterCategory('private')}
           >
-            Private Trip
+            {language === 'en' ? 'Private Trips' : 'Private Trip'}
           </button>
           <button
             className={`tab-btn ${filterCategory === 'honeymoon' ? 'active' : ''}`}
             onClick={() => setFilterCategory('honeymoon')}
           >
-            Honeymoon
+            {t.packages.tabHoneymoon}
           </button>
           <button
             className={`tab-btn ${filterCategory === 'cultural' ? 'active' : ''}`}
             onClick={() => setFilterCategory('cultural')}
           >
-            Tetebatu & Cultural
+            {t.packages.tabCulture}
           </button>
         </div>
 
@@ -208,7 +224,7 @@ export default function PaketPage() {
               }}
               className="btn-reset-filter"
             >
-              {language === 'en' ? 'Reset Filters' : 'Reset Filter'}
+              {t.buttons.resetFilter}
             </button>
           </div>
         ) : (
@@ -240,13 +256,13 @@ export default function PaketPage() {
                   <div className="package-card-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                     <div className="price-box">
                       <span className="price-label">
-                        {language === 'en' ? 'Starting from' : 'Mulai dari'}
+                        {t.packages.perPerson}
                       </span>
                       <span className="price-value">{convertPriceString(pkg.pricePlaceholder)}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                       <Link href={`/paket/${pkg.slug}`} className="btn-card-secondary">
-                        {language === 'en' ? 'Detail' : 'Detail'}
+                        {t.buttons.detail}
                       </Link>
                       <button
                         type="button"
@@ -256,7 +272,7 @@ export default function PaketPage() {
                         }}
                         className="btn-card-primary"
                       >
-                        <i className="fa fa-calendar-check-o"></i> Booking
+                        <i className="fa fa-calendar-check-o"></i> {t.buttons.book}
                       </button>
                     </div>
                   </div>

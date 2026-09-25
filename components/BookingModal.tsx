@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import packagesData from '@/data/packages.json';
 import { TourPackage, Booking } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
+import { getLocalizedPackage } from '@/lib/localization';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -19,7 +21,9 @@ export default function BookingModal({
   packageSlug,
   packageTitle,
 }: BookingModalProps) {
-  const packages: TourPackage[] = packagesData as TourPackage[];
+  const { language, t } = useLanguage();
+  const rawPackages: TourPackage[] = packagesData as TourPackage[];
+  const packages = rawPackages.map((p) => getLocalizedPackage(p, language));
 
   const [customerName, setCustomerName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -68,29 +72,29 @@ export default function BookingModal({
 
     // Client-side validations
     if (!customerName.trim() || customerName.trim().length < 2) {
-      setErrorMsg('Nama pemesan wajib diisi (minimal 2 karakter).');
+      setErrorMsg(t.bookingModal.errorName);
       return;
     }
 
     const cleanPhone = whatsapp.replace(/[^0-9+]/g, '');
     if (!cleanPhone || cleanPhone.length < 8 || cleanPhone.length > 18) {
-      setErrorMsg('Nomor WhatsApp tidak valid (format nomor minimal 8 digit).');
+      setErrorMsg(t.bookingModal.errorWa);
       return;
     }
 
     if (!travelDate) {
-      setErrorMsg('Silakan pilih tanggal keberangkatan trip.');
+      setErrorMsg(t.bookingModal.errorDate);
       return;
     }
 
     if (travelDate < todayStr) {
-      setErrorMsg('Tanggal perjalanan tidak boleh tanggal yang sudah lewat.');
+      setErrorMsg(t.bookingModal.errorDatePast);
       return;
     }
 
     const paxNum = Number(participants) || 1;
     if (paxNum < 1 || paxNum > 100) {
-      setErrorMsg('Jumlah peserta harus antara 1 sampai 100 orang.');
+      setErrorMsg(t.bookingModal.errorPax);
       return;
     }
 
@@ -105,7 +109,7 @@ export default function BookingModal({
         package_name: packageName,
         travel_date: travelDate,
         participants: paxNum,
-        pickup_location: pickupLocation.trim() || 'Bandara Internasional Lombok (BIL)',
+        pickup_location: pickupLocation.trim() || (language === 'en' ? 'Lombok International Airport (BIL)' : 'Bandara Internasional Lombok (BIL)'),
         transportation: transportation,
         notes: notes.trim(),
         hp_field: honeypot, // Honeypot verification
@@ -122,27 +126,28 @@ export default function BookingModal({
       if (json.success && json.data) {
         setSubmittedBooking(json.data);
       } else {
-        // Display specific error returned by server or fallback
-        const serverError = json.error || json.message || 'Terjadi kesalahan validasi.';
+        const serverError = json.error || json.message || t.bookingModal.errorGeneral;
         setErrorMsg(serverError);
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('Terjadi kendala jaringan saat mengirim booking.');
+      setErrorMsg(t.bookingModal.errorGeneral);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // WhatsApp click-to-chat formatted message according to exact specification
+  // WhatsApp click-to-chat formatted message
   const generateWaLink = (booking: Booking) => {
-    const text = `Halo Lombok_Travelers,\n\nSaya ingin konfirmasi booking:\n\nNo. Booking: ${booking.booking_number}\nNama: ${booking.customer_name}\nPaket: ${booking.package_name}\nTanggal: ${booking.travel_date}\nPeserta: ${booking.participants} Orang\nPickup: ${booking.pickup_location}\n\nMohon konfirmasi ketersediaannya.`;
+    const text = language === 'en'
+      ? `Hello Lombok_Travelers,\n\nI would like to confirm my booking:\n\nBooking Ref: ${booking.booking_number}\nName: ${booking.customer_name}\nPackage: ${booking.package_name}\nDate: ${booking.travel_date}\nParticipants: ${booking.participants} Guests\nPickup: ${booking.pickup_location}\n\nPlease confirm availability and details.`
+      : `Halo Lombok_Travelers,\n\nSaya ingin konfirmasi booking:\n\nNo. Booking: ${booking.booking_number}\nNama: ${booking.customer_name}\nPaket: ${booking.package_name}\nTanggal: ${booking.travel_date}\nPeserta: ${booking.participants} Orang\nPickup: ${booking.pickup_location}\n\nMohon konfirmasi ketersediaannya.`;
     return `https://wa.me/6283117110638?text=${encodeURIComponent(text)}`;
   };
 
   return (
     <div
-      className="modal-overlay active"
+      className="booking-modal-overlay"
       style={{
         position: 'fixed',
         top: 0,
@@ -203,16 +208,16 @@ export default function BookingModal({
                 marginBottom: '4px',
               }}
             >
-              Lombok_Travelers Booking System
+              {t.bookingModal.systemBadge}
             </span>
             <h3 style={{ margin: 0, fontSize: '19px', fontWeight: 800, color: '#ffffff' }}>
-              {submittedBooking ? 'Reservasi Diterima' : 'Booking Paket Wisata'}
+              {submittedBooking ? t.bookingModal.titleSuccess : t.bookingModal.titleNew}
             </h3>
           </div>
           <button
             type="button"
             onClick={handleClose}
-            aria-label="Tutup form"
+            aria-label={language === 'en' ? 'Close dialog' : 'Tutup form'}
             style={{
               background: 'rgba(255,255,255,0.15)',
               border: 'none',
@@ -256,10 +261,11 @@ export default function BookingModal({
               </div>
 
               <h4 style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b', marginBottom: '6px' }}>
-                Booking Berhasil Diajukan!
+                {t.bookingModal.successTitle}
               </h4>
               <p style={{ fontSize: '13.5px', color: '#64748b', marginBottom: '20px' }}>
-                Terima kasih <strong>{submittedBooking.customer_name}</strong>. Permintaan reservasi Anda telah tersimpan di sistem kami.
+                {language === 'en' ? 'Thank you ' : 'Terima kasih '}
+                <strong>{submittedBooking.customer_name}</strong>. {t.bookingModal.successSubtitle}
               </p>
 
               {/* Unique Booking Code Badge */}
@@ -273,7 +279,7 @@ export default function BookingModal({
                 }}
               >
                 <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>
-                  Nomor Booking Unik Anda
+                  {t.bookingModal.refLabel}
                 </span>
                 <div
                   style={{
@@ -297,7 +303,7 @@ export default function BookingModal({
                       fontWeight: 700,
                     }}
                   >
-                    Status: {submittedBooking.status}
+                    {t.bookingModal.summaryStatus}
                   </span>
                 </div>
               </div>
@@ -315,27 +321,27 @@ export default function BookingModal({
                 }}
               >
                 <h5 style={{ fontWeight: 700, color: '#0f172a', marginBottom: '10px', fontSize: '14px' }}>
-                  Ringkasan Perjalanan:
+                  {language === 'en' ? 'Trip Details Summary:' : 'Ringkasan Perjalanan:'}
                 </h5>
-                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px', color: '#334155' }}>
-                  <span style={{ color: '#64748b' }}>Paket Wisata:</span>
+                <div style={{ display: 'grid', gridTemplateColumns: '130px 1fr', gap: '8px', color: '#334155' }}>
+                  <span style={{ color: '#64748b' }}>{t.bookingModal.summaryPkg}</span>
                   <strong>{submittedBooking.package_name}</strong>
 
-                  <span style={{ color: '#64748b' }}>Tanggal Trip:</span>
+                  <span style={{ color: '#64748b' }}>{t.bookingModal.summaryDate}</span>
                   <span>{submittedBooking.travel_date}</span>
 
-                  <span style={{ color: '#64748b' }}>Jumlah Peserta:</span>
-                  <span>{submittedBooking.participants} Orang</span>
+                  <span style={{ color: '#64748b' }}>{t.bookingModal.summaryPax}</span>
+                  <span>{submittedBooking.participants} {language === 'en' ? 'Guests' : 'Orang'}</span>
 
-                  <span style={{ color: '#64748b' }}>Lokasi Pickup:</span>
+                  <span style={{ color: '#64748b' }}>{language === 'en' ? 'Pickup Location:' : 'Lokasi Pickup:'}</span>
                   <span>{submittedBooking.pickup_location}</span>
 
-                  <span style={{ color: '#64748b' }}>Transportasi:</span>
+                  <span style={{ color: '#64748b' }}>{language === 'en' ? 'Transportation:' : 'Transportasi:'}</span>
                   <span>{submittedBooking.transportation}</span>
 
                   {submittedBooking.notes && (
                     <>
-                      <span style={{ color: '#64748b' }}>Catatan Khusus:</span>
+                      <span style={{ color: '#64748b' }}>{language === 'en' ? 'Special Notes:' : 'Catatan Khusus:'}</span>
                       <span>{submittedBooking.notes}</span>
                     </>
                   )}
@@ -363,7 +369,7 @@ export default function BookingModal({
                     textDecoration: 'none',
                   }}
                 >
-                  <i className="fa fa-whatsapp" style={{ fontSize: '20px' }}></i> Konfirmasi via WhatsApp
+                  <i className="fa fa-whatsapp" style={{ fontSize: '20px' }}></i> {t.bookingModal.btnWaConfirm}
                 </a>
                 <button
                   type="button"
@@ -378,7 +384,7 @@ export default function BookingModal({
                     cursor: 'pointer',
                   }}
                 >
-                  Selesai & Tutup Jendela
+                  {t.bookingModal.btnClose}
                 </button>
               </div>
             </div>
@@ -423,7 +429,7 @@ export default function BookingModal({
                   htmlFor="bk_package"
                   style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                 >
-                  Pilihan Paket Wisata <span style={{ color: '#ef4444' }}>*</span>
+                  {t.bookingModal.pkgLabel}
                 </label>
                 <select
                   id="bk_package"
@@ -451,7 +457,9 @@ export default function BookingModal({
                       {packageTitle}
                     </option>
                   )}
-                  <option value="custom-trip">Custom Itinerary / Request Khusus</option>
+                  <option value="custom-trip">
+                    {language === 'en' ? 'Custom Itinerary / Special Request' : 'Custom Itinerary / Request Khusus'}
+                  </option>
                 </select>
               </div>
 
@@ -462,12 +470,12 @@ export default function BookingModal({
                     htmlFor="bk_name"
                     style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                   >
-                    Nama Lengkap <span style={{ color: '#ef4444' }}>*</span>
+                    {t.bookingModal.nameLabel}
                   </label>
                   <input
                     type="text"
                     id="bk_name"
-                    placeholder="Contoh: Andi Pratama"
+                    placeholder={t.bookingModal.namePlaceholder}
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     required
@@ -487,12 +495,12 @@ export default function BookingModal({
                     htmlFor="bk_wa"
                     style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                   >
-                    Nomor WhatsApp <span style={{ color: '#ef4444' }}>*</span>
+                    {t.bookingModal.waLabel}
                   </label>
                   <input
                     type="tel"
                     id="bk_wa"
-                    placeholder="0812-XXXX-XXXX"
+                    placeholder={t.bookingModal.waPlaceholder}
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     required
@@ -508,19 +516,19 @@ export default function BookingModal({
                 </div>
               </div>
 
-              {/* 3. Email (Opsional) & Tanggal Keberangkatan */}
+              {/* 3. Email & Tanggal Keberangkatan */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
                 <div>
                   <label
                     htmlFor="bk_email"
                     style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                   >
-                    Email <span style={{ fontSize: '11px', color: '#94a3b8' }}>(Opsional)</span>
+                    {t.bookingModal.emailLabel}
                   </label>
                   <input
                     type="email"
                     id="bk_email"
-                    placeholder="email@anda.com"
+                    placeholder={t.bookingModal.emailPlaceholder}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     style={{
@@ -539,7 +547,7 @@ export default function BookingModal({
                     htmlFor="bk_date"
                     style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                   >
-                    Tanggal Keberangkatan <span style={{ color: '#ef4444' }}>*</span>
+                    {t.bookingModal.dateLabel}
                   </label>
                   <input
                     type="date"
@@ -567,7 +575,7 @@ export default function BookingModal({
                     htmlFor="bk_pax"
                     style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                   >
-                    Jumlah Peserta <span style={{ color: '#ef4444' }}>*</span>
+                    {t.bookingModal.paxLabel}
                   </label>
                   <input
                     type="number"
@@ -593,7 +601,7 @@ export default function BookingModal({
                     htmlFor="bk_transport"
                     style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                   >
-                    Pilihan Transportasi
+                    {t.bookingModal.transportLabel}
                   </label>
                   <select
                     id="bk_transport"
@@ -609,12 +617,20 @@ export default function BookingModal({
                       outline: 'none',
                     }}
                   >
-                    <option value="Innova Reborn (Private AC)">Innova Reborn (Private AC)</option>
-                    <option value="Avanza / Xenia (Hemat)">Avanza / Xenia (Hemat)</option>
-                    <option value="Toyota HiAce Commuter (12-14 Pax)">Toyota HiAce Commuter (12-14 Pax)</option>
+                    <option value="Innova Reborn (Private AC)">
+                      {language === 'en' ? 'Toyota Innova Reborn (Private AC)' : 'Innova Reborn (Private AC)'}
+                    </option>
+                    <option value="Avanza / Xenia (Family MPV)">
+                      {language === 'en' ? 'Avanza / Xenia (Family MPV Budget)' : 'Avanza / Xenia (Hemat)'}
+                    </option>
+                    <option value="Toyota HiAce Commuter (12-14 Pax)">
+                      {language === 'en' ? 'Toyota HiAce Commuter (12-14 Guests)' : 'Toyota HiAce Commuter (12-14 Pax)'}
+                    </option>
                     <option value="Toyota HiAce Premio Luxury">Toyota HiAce Premio Luxury</option>
-                    <option value="Toyota Fortuner VRZ">Toyota Fortuner VRZ</option>
-                    <option value="Tanpa Transport (Hotel Only)">Tanpa Transport (Paket Tertentu)</option>
+                    <option value="Toyota Fortuner VRZ">Toyota Fortuner VRZ (VIP 4WD)</option>
+                    <option value="Tanpa Transport (Hotel Only)">
+                      {language === 'en' ? 'No Transport (Hotel / Tour Only)' : 'Tanpa Transport (Paket Tertentu)'}
+                    </option>
                   </select>
                 </div>
               </div>
@@ -625,12 +641,12 @@ export default function BookingModal({
                   htmlFor="bk_pickup"
                   style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                 >
-                  Lokasi Penjemputan (Pickup)
+                  {t.bookingModal.pickupLabel}
                 </label>
                 <input
                   type="text"
                   id="bk_pickup"
-                  placeholder="Contoh: Bandara Internasional Lombok (BIL), Hotel Senggigi, Kuta, dll"
+                  placeholder={t.bookingModal.pickupPlaceholder}
                   value={pickupLocation}
                   onChange={(e) => setPickupLocation(e.target.value)}
                   style={{
@@ -650,12 +666,12 @@ export default function BookingModal({
                   htmlFor="bk_notes"
                   style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}
                 >
-                  Catatan / Permintaan Khusus <span style={{ fontSize: '11px', color: '#94a3b8' }}>(Opsional)</span>
+                  {t.bookingModal.notesLabel}
                 </label>
                 <textarea
                   id="bk_notes"
                   rows={2}
-                  placeholder="Contoh: Bawa anak kecil, request hotel bintang 4, vegetarian, dll"
+                  placeholder={t.bookingModal.notesPlaceholder}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   style={{
@@ -692,17 +708,17 @@ export default function BookingModal({
               >
                 {isSubmitting ? (
                   <>
-                    <i className="fa fa-spinner fa-spin"></i> Memproses Reservasi...
+                    <i className="fa fa-spinner fa-spin"></i> {t.bookingModal.btnSubmitting}
                   </>
                 ) : (
                   <>
-                    <i className="fa fa-calendar-check-o"></i> Ajukan Booking
+                    <i className="fa fa-calendar-check-o"></i> {t.buttons.bookNow}
                   </>
                 )}
               </button>
 
               <p style={{ textAlign: 'center', fontSize: '11.5px', color: '#94a3b8', marginTop: '10px', marginBottom: 0 }}>
-                <i className="fa fa-lock"></i> Data Anda aman & langsung dikonfirmasi dengan tim lokal Lombok_Travelers.
+                <i className="fa fa-lock"></i> {t.bookingModal.termsText}
               </p>
             </form>
           )}

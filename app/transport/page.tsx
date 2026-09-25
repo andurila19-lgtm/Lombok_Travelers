@@ -5,82 +5,100 @@ import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import BookingModal from '@/components/BookingModal';
 
-interface Vehicle {
+interface VehicleRaw {
   id: string;
   name: string;
-  category: string;
-  capacity: string;
-  transmission: string;
+  category: { id: string; en: string };
+  capacity: { id: string; en: string };
+  transmission: { id: string; en: string };
   pricePerDay: string;
   image: string;
-  features: string[];
+  features: { id: string[]; en: string[] };
 }
 
-const vehicles: Vehicle[] = [
+const rawVehicles: VehicleRaw[] = [
   {
     id: 'avanza',
     name: 'All New Avanza / Xenia',
-    category: 'MPV Keluarga Hemat',
-    capacity: '5 - 6 Penumpang',
-    transmission: 'Manual / Automatic',
+    category: { id: 'MPV Keluarga Hemat', en: 'Budget Family MPV' },
+    capacity: { id: '5 - 6 Penumpang', en: '5 - 6 Passengers' },
+    transmission: { id: 'Manual / Automatic', en: 'Manual / Automatic' },
     pricePerDay: 'Rp 550.000 / 12 Jam',
     image: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=800&q=80',
-    features: ['Include Driver Ramah', 'BBM Sudah Termasuk', 'AC Dingin & Bersih', 'Free Air Mineral']
+    features: {
+      id: ['Include Driver Ramah', 'BBM Sudah Termasuk', 'AC Dingin & Bersih', 'Free Air Mineral'],
+      en: ['Friendly Driver Included', 'Fuel (BBM) Fully Covered', 'Clean & Cold AC', 'Free Bottled Mineral Water']
+    }
   },
   {
     id: 'innova',
     name: 'Toyota Innova Reborn',
-    category: 'Medium MPV Premium',
-    capacity: '6 - 7 Penumpang',
-    transmission: 'Automatic',
+    category: { id: 'Medium MPV Premium', en: 'Premium Medium MPV' },
+    capacity: { id: '6 - 7 Penumpang', en: '6 - 7 Passengers' },
+    transmission: { id: 'Automatic', en: 'Automatic' },
     pricePerDay: 'Rp 850.000 / 12 Jam',
     image: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=800&q=80',
-    features: ['Suspensi Nyaman & Luas', 'Include Driver Berpengalaman', 'BBM Sudah Termasuk', 'Port USB Charger']
+    features: {
+      id: ['Suspensi Nyaman & Luas', 'Include Driver Berpengalaman', 'BBM Sudah Termasuk', 'Port USB Charger'],
+      en: ['Smooth Ride & Spacious', 'Experienced Driver Included', 'Fuel Fully Included', 'USB Charging Ports']
+    }
   },
   {
     id: 'hiace-commuter',
     name: 'Toyota HiAce Commuter',
-    category: 'Minibus Rombongan',
-    capacity: '12 - 14 Penumpang',
-    transmission: 'Manual',
+    category: { id: 'Minibus Rombongan', en: 'Group Minibus' },
+    capacity: { id: '12 - 14 Penumpang', en: '12 - 14 Passengers' },
+    transmission: { id: 'Manual', en: 'Manual' },
     pricePerDay: 'Rp 1.250.000 / 12 Jam',
     image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=800&q=80',
-    features: ['Kabin Luas Berdiri Mudah', 'Bagasi Koper Besar', 'Driver Khusus Rombongan', 'Include BBM & Antar-Jemput']
+    features: {
+      id: ['Kabin Luas Berdiri Mudah', 'Bagasi Koper Besar', 'Driver Khusus Rombongan', 'Include BBM & Antar-Jemput'],
+      en: ['Spacious High-Roof Cabin', 'Generous Luggage Trunk', 'Dedicated Group Driver', 'Fuel & Roundtrip Included']
+    }
   },
   {
     id: 'hiace-premio',
     name: 'Toyota HiAce Premio Luxury',
-    category: 'Executive Minibus',
-    capacity: '10 - 12 Penumpang',
-    transmission: 'Manual',
+    category: { id: 'Executive Minibus', en: 'Executive Luxury Minibus' },
+    capacity: { id: '10 - 12 Penumpang', en: '10 - 12 Passengers' },
+    transmission: { id: 'Manual', en: 'Manual' },
     pricePerDay: 'Rp 1.550.000 / 12 Jam',
     image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80',
-    features: ['Interior Mewah Captain Seat', 'Audio & Layar Hiburan', 'Driver Standar Protokol VIP', 'Include BBM Full Day']
+    features: {
+      id: ['Interior Mewah Captain Seat', 'Audio & Layar Hiburan', 'Driver Standar Protokol VIP', 'Include BBM Full Day'],
+      en: ['Plush Captain Seats', 'Audio & Media Entertainment Screen', 'VIP Protocol Standard Driver', 'Full Day Fuel Included']
+    }
   },
   {
     id: 'fortuner',
     name: 'Toyota Fortuner VRZ',
-    category: 'Premium SUV',
-    capacity: '5 - 6 Penumpang',
-    transmission: 'Automatic',
+    category: { id: 'Premium SUV', en: 'Premium 4WD SUV' },
+    capacity: { id: '5 - 6 Penumpang', en: '5 - 6 Passengers' },
+    transmission: { id: 'Automatic', en: 'Automatic' },
     pricePerDay: 'Rp 1.600.000 / 12 Jam',
     image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80',
-    features: ['Tangguh di Tanjakan Rinjani', 'Gaya Elegan & Mewah', 'Driver Khusus Eksekutif', 'BBM & Layanan VIP']
+    features: {
+      id: ['Tangguh di Tanjakan Rinjani', 'Gaya Elegan & Mewah', 'Driver Khusus Eksekutif', 'BBM & Layanan VIP'],
+      en: ['Power on Rinjani Mountain Slopes', 'Prestigious & Luxurious Style', 'Dedicated Executive Driver', 'Fuel & VIP Service']
+    }
   },
   {
     id: 'alphard',
     name: 'Toyota Alphard Transformer',
-    category: 'VIP Luxury Van',
-    capacity: '5 - 6 Penumpang',
-    transmission: 'Automatic',
+    category: { id: 'VIP Luxury Van', en: 'VIP Luxury Van' },
+    capacity: { id: '5 - 6 Penumpang', en: '5 - 6 Passengers' },
+    transmission: { id: 'Automatic', en: 'Automatic' },
     pricePerDay: 'Rp 3.200.000 / 12 Jam',
     image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80',
-    features: ['Ottoman Leather Seat', 'Sunroof & Ambient Lighting', 'Driver Berpakaian Formal', 'Pilihan Tamu VIP / Pejabat']
+    features: {
+      id: ['Ottoman Leather Seat', 'Sunroof & Ambient Lighting', 'Driver Berpakaian Formal', 'Pilihan Tamu VIP / Pejabat'],
+      en: ['Ottoman Leather Recliners', 'Sunroof & Ambient Lighting', 'Formally Dressed Chauffeur', 'Dignitaries & VIP Choice']
+    }
   }
 ];
 
 export default function TransportPage() {
-  const { language, convertPriceString } = useLanguage();
+  const { language, t, convertPriceString } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // Booking Modal State
@@ -95,13 +113,58 @@ export default function TransportPage() {
     setIsBookingOpen(true);
   };
 
-  const filteredVehicles = vehicles.filter((v) => {
+  const filteredVehicles = rawVehicles.filter((v) => {
     if (selectedCategory === 'all') return true;
     if (selectedCategory === 'family') return v.id === 'avanza' || v.id === 'innova';
     if (selectedCategory === 'group') return v.id.includes('hiace');
     if (selectedCategory === 'vip') return v.id === 'fortuner' || v.id === 'alphard';
     return true;
   });
+
+  const routes = [
+    {
+      routeId: 'Bandara BIL ↔ Kuta Mandalika',
+      routeEn: 'BIL Airport ↔ Kuta Mandalika',
+      avanza: 'Rp 200.000',
+      innova: 'Rp 350.000',
+      hiace: 'Rp 550.000'
+    },
+    {
+      routeId: 'Bandara BIL ↔ Kota Mataram',
+      routeEn: 'BIL Airport ↔ Mataram City',
+      avanza: 'Rp 250.000',
+      innova: 'Rp 400.000',
+      hiace: 'Rp 650.000'
+    },
+    {
+      routeId: 'Bandara BIL ↔ Senggigi',
+      routeEn: 'BIL Airport ↔ Senggigi Beach',
+      avanza: 'Rp 300.000',
+      innova: 'Rp 450.000',
+      hiace: 'Rp 750.000'
+    },
+    {
+      routeId: 'Bandara BIL ↔ Pelabuhan Bangsal (Gili)',
+      routeEn: 'BIL Airport ↔ Bangsal Harbor (Gilis)',
+      avanza: 'Rp 350.000',
+      innova: 'Rp 500.000',
+      hiace: 'Rp 850.000'
+    },
+    {
+      routeId: 'Bandara BIL ↔ Tetebatu (Lombok Timur)',
+      routeEn: 'BIL Airport ↔ Tetebatu (East Lombok)',
+      avanza: 'Rp 300.000',
+      innova: 'Rp 450.000',
+      hiace: 'Rp 750.000'
+    },
+    {
+      routeId: 'Bandara BIL ↔ Sembalun / Senaru',
+      routeEn: 'BIL Airport ↔ Sembalun / Senaru (Rinjani)',
+      avanza: 'Rp 500.000',
+      innova: 'Rp 750.000',
+      hiace: 'Rp 1.100.000'
+    }
+  ];
 
   return (
     <div className="multipage-wrapper">
@@ -139,91 +202,98 @@ export default function TransportPage() {
             className={`tab-btn ${selectedCategory === 'family' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('family')}
           >
-            Keluarga (Avanza / Innova)
+            {language === 'en' ? 'Family (Avanza / Innova)' : 'Keluarga (Avanza / Innova)'}
           </button>
           <button
             className={`tab-btn ${selectedCategory === 'group' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('group')}
           >
-            Rombongan (HiAce)
+            {language === 'en' ? 'Group (HiAce Minibus)' : 'Rombongan (HiAce)'}
           </button>
           <button
             className={`tab-btn ${selectedCategory === 'vip' ? 'active' : ''}`}
             onClick={() => setSelectedCategory('vip')}
           >
-            VIP & SUV (Fortuner / Alphard)
+            {language === 'en' ? 'VIP & SUV (Fortuner / Alphard)' : 'VIP & SUV (Fortuner / Alphard)'}
           </button>
         </div>
 
         {/* VEHICLES GRID */}
         <div className="fleet-grid">
-          {filteredVehicles.map((car) => (
-            <div key={car.id} className="fleet-card">
-              <div className="fleet-img-box">
-                <img src={car.image} alt={car.name} />
-                <span className="fleet-badge">{car.category}</span>
-              </div>
-              <div className="fleet-body">
-                <h3 className="fleet-name">{car.name}</h3>
-                <div className="fleet-specs">
-                  <span><i className="fa fa-users"></i> {car.capacity}</span>
-                  <span><i className="fa fa-cog"></i> {car.transmission}</span>
+          {filteredVehicles.map((car) => {
+            const cat = car.category[language] || car.category.id;
+            const cap = car.capacity[language] || car.capacity.id;
+            const trans = car.transmission[language] || car.transmission.id;
+            const feats = car.features[language] || car.features.id;
+
+            return (
+              <div key={car.id} className="fleet-card">
+                <div className="fleet-img-box">
+                  <img src={car.image} alt={car.name} />
+                  <span className="fleet-badge">{cat}</span>
                 </div>
-
-                <ul className="fleet-features-list">
-                  {car.features.map((feat, i) => (
-                    <li key={i}><i className="fa fa-check"></i> {feat}</li>
-                  ))}
-                </ul>
-
-                <div className="fleet-footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'stretch' }}>
-                  <div className="fleet-price">
-                    <span className="fleet-price-tag">{convertPriceString(car.pricePerDay)}</span>
+                <div className="fleet-body">
+                  <h3 className="fleet-name">{car.name}</h3>
+                  <div className="fleet-specs">
+                    <span><i className="fa fa-users"></i> {cap}</span>
+                    <span><i className="fa fa-cog"></i> {trans}</span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                    <button
-                      type="button"
-                      onClick={() => handleOpenBooking(`Sewa Mobil ${car.name}`, `sewa-${car.id}`)}
-                      style={{
-                        background: 'var(--primary, #185a38)',
-                        color: '#ffffff',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '8px 10px',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                      }}
-                    >
-                      <i className="fa fa-calendar-check-o"></i> {language === 'en' ? 'Book' : 'Booking'}
-                    </button>
+                  <ul className="fleet-features-list">
+                    {feats.map((feat, i) => (
+                      <li key={i}><i className="fa fa-check"></i> {feat}</li>
+                    ))}
+                  </ul>
 
-                    <a
-                      href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20sewa%20mobil%20${encodeURIComponent(car.name)}.%20Mohon%20info%20ketersediaan.`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-rent-wa"
-                      style={{
-                        padding: '8px 10px',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '4px',
-                      }}
-                    >
-                      <i className="fa fa-whatsapp"></i> Chat WA
-                    </a>
+                  <div className="fleet-footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'stretch' }}>
+                    <div className="fleet-price">
+                      <span className="fleet-price-tag">{convertPriceString(car.pricePerDay)}</span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenBooking(`Sewa Mobil ${car.name}`, `sewa-${car.id}`)}
+                        style={{
+                          background: 'var(--primary, #185a38)',
+                          color: '#ffffff',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '8px 10px',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          borderRadius: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        <i className="fa fa-calendar-check-o"></i> {t.buttons.book}
+                      </button>
+
+                      <a
+                        href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20sewa%20mobil%20${encodeURIComponent(car.name)}.%20Mohon%20info%20ketersediaan.`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-rent-wa"
+                        style={{
+                          padding: '8px 10px',
+                          fontSize: '12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        <i className="fa fa-whatsapp"></i> {t.buttons.chatWa}
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* AIRPORT TRANSFER TABLE */}
@@ -241,49 +311,21 @@ export default function TransportPage() {
           <table className="price-table">
             <thead>
               <tr>
-                <th>Rute Perjalanan</th>
-                <th>Mobil Avanza (1-5 Org)</th>
-                <th>Innova Reborn (1-6 Org)</th>
-                <th>HiAce (1-14 Org)</th>
+                <th>{language === 'en' ? 'Transfer Route' : 'Rute Perjalanan'}</th>
+                <th>{language === 'en' ? 'Avanza (1-5 Pax)' : 'Mobil Avanza (1-5 Org)'}</th>
+                <th>{language === 'en' ? 'Innova Reborn (1-6 Pax)' : 'Innova Reborn (1-6 Org)'}</th>
+                <th>{language === 'en' ? 'HiAce (1-14 Pax)' : 'HiAce (1-14 Org)'}</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>Bandara BIL ↔ Kuta Mandalika</strong></td>
-                <td>{convertPriceString('Rp 200.000')}</td>
-                <td>{convertPriceString('Rp 350.000')}</td>
-                <td>{convertPriceString('Rp 550.000')}</td>
-              </tr>
-              <tr>
-                <td><strong>Bandara BIL ↔ Kota Mataram</strong></td>
-                <td>{convertPriceString('Rp 250.000')}</td>
-                <td>{convertPriceString('Rp 400.000')}</td>
-                <td>{convertPriceString('Rp 650.000')}</td>
-              </tr>
-              <tr>
-                <td><strong>Bandara BIL ↔ Senggigi</strong></td>
-                <td>{convertPriceString('Rp 300.000')}</td>
-                <td>{convertPriceString('Rp 450.000')}</td>
-                <td>{convertPriceString('Rp 750.000')}</td>
-              </tr>
-              <tr>
-                <td><strong>Bandara BIL ↔ Pelabuhan Bangsal (Gili)</strong></td>
-                <td>{convertPriceString('Rp 350.000')}</td>
-                <td>{convertPriceString('Rp 500.000')}</td>
-                <td>{convertPriceString('Rp 850.000')}</td>
-              </tr>
-              <tr>
-                <td><strong>Bandara BIL ↔ Tetebatu (Lombok Timur)</strong></td>
-                <td>{convertPriceString('Rp 300.000')}</td>
-                <td>{convertPriceString('Rp 450.000')}</td>
-                <td>{convertPriceString('Rp 750.000')}</td>
-              </tr>
-              <tr>
-                <td><strong>Bandara BIL ↔ Sembalun / Senaru</strong></td>
-                <td>{convertPriceString('Rp 500.000')}</td>
-                <td>{convertPriceString('Rp 750.000')}</td>
-                <td>{convertPriceString('Rp 1.100.000')}</td>
-              </tr>
+              {routes.map((r, i) => (
+                <tr key={i}>
+                  <td><strong>{language === 'en' ? r.routeEn : r.routeId}</strong></td>
+                  <td>{convertPriceString(r.avanza)}</td>
+                  <td>{convertPriceString(r.innova)}</td>
+                  <td>{convertPriceString(r.hiace)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
 
@@ -306,7 +348,8 @@ export default function TransportPage() {
                 boxShadow: '0 4px 12px rgba(24, 90, 56, 0.25)',
               }}
             >
-              <i className="fa fa-calendar-check-o"></i> Reservasi Antar-Jemput Bandara Sekarang
+              <i className="fa fa-calendar-check-o"></i>{' '}
+              {language === 'en' ? 'Reserve Airport Transfer Now' : 'Reservasi Antar-Jemput Bandara Sekarang'}
             </button>
           </div>
         </div>
