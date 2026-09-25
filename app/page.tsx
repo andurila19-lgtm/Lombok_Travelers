@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import packagesData from '@/data/packages.json';
 import dailyTrips from '@/data/dailyTrips.json';
@@ -9,12 +10,107 @@ import PackageList from '@/components/PackageList';
 import CustomTripForm from '@/components/CustomTripForm';
 import ConciergeTrigger from '@/components/ConciergeTrigger';
 import FaqSection, { faqsData } from '@/components/FaqSection';
+import BookingModal from '@/components/BookingModal';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function HomePage() {
-  const { language, t } = useLanguage();
+  const { language, t, convertPriceString } = useLanguage();
   const packages: TourPackage[] = packagesData as TourPackage[];
   const trips: DailyTrip[] = dailyTrips as DailyTrip[];
+
+  // State for Transport Vehicle Booking Modal
+  const [isVehicleBookingOpen, setIsVehicleBookingOpen] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState({ title: '', slug: '' });
+
+  const handleOpenVehicleBooking = (title: string, slug: string) => {
+    setSelectedVehicle({ title, slug });
+    setIsVehicleBookingOpen(true);
+  };
+
+  const featuredFleets = [
+    {
+      id: 'innova',
+      name: 'Toyota Innova Reborn',
+      badge: language === 'en' ? 'Most Popular' : 'Paling Populer',
+      badgeClass: 'home-fleet-badge-pop',
+      category: language === 'en' ? 'Medium MPV Premium' : 'Medium MPV Premium',
+      capacity: '6 - 7 Seat',
+      transmission: 'Automatic',
+      ac: 'Double Blower',
+      price: 'Rp 850.000 / 12 Jam',
+      image: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=800&q=80',
+      features: [
+        language === 'en' ? 'Courteous native Sasak driver included' : 'Include Supir Ramah Asli Sasak',
+        language === 'en' ? 'Fuel / BBM completely covered' : 'BBM / Bensin Sudah Termasuk',
+        language === 'en' ? 'Cool dual AC & USB charging port' : 'Full AC Dingin & Port Charger USB',
+      ],
+    },
+    {
+      id: 'avanza',
+      name: 'All New Avanza / Xenia',
+      badge: language === 'en' ? 'Best Value' : 'Best Value',
+      badgeClass: 'home-fleet-badge-val',
+      category: language === 'en' ? 'Family MPV Budget' : 'MPV Keluarga Hemat',
+      capacity: '5 - 6 Seat',
+      transmission: 'Manual / Matic',
+      ac: 'Full AC Dingin',
+      price: 'Rp 550.000 / 12 Jam',
+      image: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=800&q=80',
+      features: [
+        language === 'en' ? 'Punctual experienced driver' : 'Include Supir Berpengalaman',
+        language === 'en' ? 'Fuel / BBM completely covered' : 'BBM / Bensin Sudah Termasuk',
+        language === 'en' ? 'Spacious luggage trunk & clean interior' : 'Bersih, Wangi & Bagasi Koper Luas',
+      ],
+    },
+    {
+      id: 'hiace-commuter',
+      name: 'Toyota HiAce Commuter',
+      badge: language === 'en' ? 'Group & Family' : 'Rombongan & Grup',
+      badgeClass: 'home-fleet-badge-grp',
+      category: language === 'en' ? 'Spacious Tour Minibus' : 'Minibus Wisata Luas',
+      capacity: '12 - 14 Seat',
+      transmission: 'Manual',
+      ac: 'Triple Blower Dingin',
+      price: 'Rp 1.250.000 / 12 Jam',
+      image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=800&q=80',
+      features: [
+        language === 'en' ? 'High roof ceiling, easy walk inside' : 'Kabin Tinggi Nyaman Berdiri',
+        language === 'en' ? 'Generous extra luggage room' : 'Bagasi Ekstra Besar Khusus Tour',
+        language === 'en' ? 'Driver + Fuel included all-day' : 'Include Supir Khusus Tour + BBM',
+      ],
+    },
+  ];
+
+  const servicePillars = [
+    {
+      icon: 'fa-plane',
+      title: language === 'en' ? 'Airport Transfer On-Time' : 'Airport Transfer Tepat Waktu',
+      desc: language === 'en'
+        ? 'Punctual pick-up/drop-off BIL Airport to Tetebatu, Mataram, Senggigi, Kuta & Bangsal.'
+        : 'Antar-jemput tepat waktu Bandara Lombok (BIL) ke Tetebatu, Mataram, Senggigi & Kuta.',
+    },
+    {
+      icon: 'fa-tint',
+      title: language === 'en' ? 'All-Inclusive (Driver + BBM)' : 'Paket All-In (Driver + BBM)',
+      desc: language === 'en'
+        ? 'No hidden surprises. Car, experienced driver, and fuel are 100% included in the rate.'
+        : 'Bebas biaya tersembunyi, BBM dan supir ramah asli Sasak sudah termasuk dalam tarif sewa.',
+    },
+    {
+      icon: 'fa-id-card-o',
+      title: language === 'en' ? 'Driver as Local Guide' : 'Driver Merangkap Guide',
+      desc: language === 'en'
+        ? 'Courteous native Sasak drivers guiding you along scenic routes at an unhurried pace.'
+        : 'Supir lokal yang santun, informatif, dan siap memandu rute wisata terbaik tanpa buru-buru.',
+    },
+    {
+      icon: 'fa-shield',
+      title: language === 'en' ? '100% Private & Spotless' : '100% Private & Higienis',
+      desc: language === 'en'
+        ? 'Sanitized, cool AC vehicles exclusively for your group, never mixed with others.'
+        : 'Mobil bersih, ber-AC dingin, wangi, dan khusus rombongan Anda tanpa dicampur orang lain.',
+    },
+  ];
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -297,71 +393,112 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. TRANSPORTASI LOMBOK */}
+      {/* 8. TRANSPORTASI LOMBOK (Redesigned: High-Converting Featured Fleet & 4 Value Pillars) */}
       <section className="transport-section" id="transport">
         <div className="box1140">
           <div className="section-header">
             <span className="section-tag">{t.transport.tag}</span>
             <h2 className="section-title">{t.transport.title}</h2>
-            <p className="section-subtitle">{t.transport.subtitle}</p>
+            <p className="section-subtitle">
+              {language === 'en'
+                ? 'Spotless vehicles inclusive of friendly local Sasak driver + fuel for your ultimate holiday comfort across Lombok.'
+                : 'Pilihan armada bersih dan terawat dengan layanan All-Inclusive (Mobil + Supir Lokal Ramah + BBM) siap mengantar liburan Anda keliling Lombok.'}
+            </p>
           </div>
 
-          <div className="transport-grid">
-            <div className="transport-card">
-              <div className="transport-icon"><i className="fa fa-plane"></i></div>
-              <h3>Airport Transfer</h3>
-              <p>
-                {language === 'en'
-                  ? 'Punctual pick-up/drop-off between Lombok BIL Airport and Tetebatu, Mataram, Senggigi, Kuta & Bangsal.'
-                  : 'Antar-jemput tepat waktu Bandara Internasional Lombok (BIL) ke Tetebatu, Mataram, Senggigi, Kuta & Bangsal.'}
-              </p>
-            </div>
+          {/* 3 Featured Best-Seller Fleets */}
+          <div className="home-fleet-grid">
+            {featuredFleets.map((car) => (
+              <div key={car.id} className="home-fleet-card">
+                <div className="home-fleet-img-box">
+                  <img src={car.image} alt={car.name} loading="lazy" />
+                  <span className="home-fleet-badge-top">All-In Driver & BBM</span>
+                  <span className={car.badgeClass}>{car.badge}</span>
+                </div>
 
-            <div className="transport-card">
-              <div className="transport-icon"><i className="fa fa-car"></i></div>
-              <h3>Private Car Rental</h3>
-              <p>
-                {language === 'en'
-                  ? 'Spotless & well-maintained vehicles (Toyota Innova Reborn, Avanza, Xpander, HiAce) with cool AC.'
-                  : 'Unit mobil bersih & terawat (Toyota Innova Reborn, Avanza, Xpander, HiAce) full AC dingin.'}
-              </p>
-            </div>
+                <div className="home-fleet-body">
+                  <h3 className="home-fleet-title">{car.name}</h3>
+                  <span className="home-fleet-cat">{car.category}</span>
 
-            <div className="transport-card">
-              <div className="transport-icon"><i className="fa fa-id-card-o"></i></div>
-              <h3>{language === 'en' ? 'Friendly Local Drivers' : 'Driver Lokal Ramah'}</h3>
-              <p>
-                {language === 'en'
-                  ? 'Courteous native Sasak drivers ready to guide you along scenic routes at an unhurried pace.'
-                  : 'Supir lokal asli yang santun, informatif, dan siap memandu rute wisata terbaik tanpa terburu-buru.'}
-              </p>
-            </div>
+                  <div className="home-fleet-specs">
+                    <span className="home-fleet-spec-pill">
+                      <i className="fa fa-users"></i> {car.capacity}
+                    </span>
+                    <span className="home-fleet-spec-pill">
+                      <i className="fa fa-cog"></i> {car.transmission}
+                    </span>
+                    <span className="home-fleet-spec-pill">
+                      <i className="fa fa-snowflake-o"></i> {car.ac}
+                    </span>
+                  </div>
 
-            <div className="transport-card">
-              <div className="transport-icon"><i className="fa fa-road"></i></div>
-              <h3>Private Trip Transport</h3>
-              <p>
-                {language === 'en'
-                  ? 'Dedicated vehicle exclusively reserved for your holiday without combining other groups.'
-                  : 'Kendaraan siap standby penuh selama program tour tanpa dicampur penumpang atau rombongan lain.'}
-              </p>
-            </div>
+                  <ul className="home-fleet-features">
+                    {car.features.map((feat, idx) => (
+                      <li key={idx}>
+                        <i className="fa fa-check-circle"></i>
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
 
-            <div className="transport-card">
-              <div className="transport-icon"><i className="fa fa-building-o"></i></div>
-              <h3>Hotel Pickup & Drop</h3>
-              <p>
-                {language === 'en'
-                  ? 'Seamless inter-hotel transfers between districts (e.g. from Tetebatu to Senggigi or Gili harbor).'
-                  : 'Layanan perpindahan hotel antar wilayah (misal: dari Tetebatu ke Senggigi / Pelabuhan Gili).'}
-              </p>
-            </div>
+                  <div className="home-fleet-price-row">
+                    <span className="home-fleet-price-label">{language === 'en' ? 'Rental Rate:' : 'Tarif Sewa:'}</span>
+                    <span className="home-fleet-price-val">{convertPriceString(car.price)}</span>
+                  </div>
+
+                  <div className="home-fleet-actions">
+                    <button
+                      type="button"
+                      className="home-fleet-btn-book"
+                      onClick={() => handleOpenVehicleBooking(`Sewa ${car.name}`, `sewa-${car.id}`)}
+                    >
+                      <i className="fa fa-calendar-check-o"></i>
+                      <span>{language === 'en' ? 'Book Now' : 'Booking'}</span>
+                    </button>
+                    <a
+                      href={`https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20tertarik%20sewa%20mobil%20${encodeURIComponent(car.name)}%20(${encodeURIComponent(car.price)}).%20Mohon%20info%20ketersediaan.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="home-fleet-btn-wa"
+                    >
+                      <i className="fa fa-whatsapp"></i>
+                      <span>Chat WA</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: '32px' }}>
-            <Link href="/transport" className="btn-primary">
-              <i className="fa fa-car"></i> {t.transport.rentNow}
+          {/* 4 Balanced Service Guarantees */}
+          <div className="transport-pillars-grid">
+            {servicePillars.map((pillar, i) => (
+              <div key={i} className="transport-pillar-card">
+                <div className="transport-pillar-icon">
+                  <i className={`fa ${pillar.icon}`}></i>
+                </div>
+                <h4>{pillar.title}</h4>
+                <p>{pillar.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Dual Action Buttons */}
+          <div className="transport-action-bar">
+            <Link href="/transport" className="btn-transport-all">
+              <i className="fa fa-car"></i>
+              <span>{language === 'en' ? 'View All 6 Fleets & Full Pricelist' : 'Lihat Semua 6 Armada & Daftar Tarif Lengkap'}</span>
+              <i className="fa fa-arrow-right" style={{ fontSize: '12px' }}></i>
             </Link>
+            <a
+              href="https://wa.me/6283117110638?text=Halo%20Lombok_Travelers,%20saya%20ingin%20konsultasi%20rute%20dan%20sewa%20mobil%20di%20Lombok."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-transport-wa-all"
+            >
+              <i className="fa fa-whatsapp" style={{ color: '#25d366', fontSize: '16px' }}></i>
+              <span>{language === 'en' ? 'Custom Route Consultation (Free)' : 'Konsultasi Rute Sewa (Gratis via WA)'}</span>
+            </a>
           </div>
         </div>
       </section>
@@ -591,6 +728,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      {/* VEHICLE BOOKING MODAL */}
+      <BookingModal
+        isOpen={isVehicleBookingOpen}
+        onClose={() => setIsVehicleBookingOpen(false)}
+        packageTitle={selectedVehicle.title}
+        packageSlug={selectedVehicle.slug}
+      />
     </>
   );
 }
