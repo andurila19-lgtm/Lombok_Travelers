@@ -2512,28 +2512,51 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
   }
   .hero-benchmark-wrapper {
-    height: 400px;
+    height: auto !important;
+    min-height: 250px !important;
+    padding: 34px 16px 28px !important;
+    background-position: center center !important;
   }
   .dschome strong {
-    font-size: 24px;
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 4px !important;
   }
   .dschome .hero-dest-line {
-    font-size: 20px;
+    font-size: 16px !important;
+    line-height: 1.3 !important;
+    margin-bottom: 8px !important;
   }
   .dschome span {
-    font-size: 12.5px;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
   }
   #srchome {
-    padding: 18px 0;
+    padding: 14px 0 20px 0 !important;
   }
   .srchome-form {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
   }
-  .srchome-col select,
+  .srchome-col {
+    gap: 4px !important;
+  }
+  .srchome-col span,
+  .srchome-col label {
+    font-size: 12px !important;
+  }
+  .srchome-col select {
+    height: 38px !important;
+    font-size: 13px !important;
+    padding: 0 10px !important;
+    border-radius: 6px !important;
+  }
   .smt {
-    height: 42px;
+    height: 42px !important;
+    font-size: 13.5px !important;
+    margin-top: 4px !important;
+    border-radius: 6px !important;
   }
 
   /* Compact sections to prevent excessive scrolling */
@@ -2887,7 +2910,8 @@ h1, h2, h3, h4, h5, h6 {
     height: 44px !important;
     font-size: 22px !important;
   }
-  .wabtn-text {
+  .wabtn-text,
+  .wabtn-bubble {
     display: none !important;
   }
   .footer-top {
