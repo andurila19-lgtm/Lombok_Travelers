@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     'Pilihan one-day trip harian di Lombok: Snorkeling 3 Gili Trawangan, Air Terjun Sarang Walet Tetebatu, Panorama Sembalun, dan Pantai Pink. Berangkat setiap hari tanpa repot.',
   alternates: {
-    canonical: 'https://lomboktravelers.com/trip-harian',
+    canonical: 'https://lomboktravelers.reaksy.com/trip-harian',
   },
   openGraph: {
     title: 'Trip Harian Lombok Terbaik — Snorkeling & Wisata Alam',
     description:
       'Jelajahi keindahan Lombok dalam 1 hari dengan private transport, boat snorkeling, dan pemandu lokal Tetebatu.',
-    url: 'https://lomboktravelers.com/trip-harian',
+    url: 'https://lomboktravelers.reaksy.com/trip-harian',
     images: [
       {
         url: '/images/gili_snorkeling.jpg',

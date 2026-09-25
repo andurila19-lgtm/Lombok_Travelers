@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     'Hubungi Lombok_Travelers via WhatsApp 24/7 di 0831-1711-0638 atau kunjungi kantor basecamp kami di Jl. Pariwisata Tetebatu, Kec. Sikur, Lombok Timur. Konsultasi itinerary gratis!',
   alternates: {
-    canonical: 'https://lomboktravelers.com/kontak',
+    canonical: 'https://lomboktravelers.reaksy.com/kontak',
   },
   openGraph: {
     title: 'Hubungi Lombok_Travelers — Layanan Pelanggan 24 Jam',
     description:
       'Konsultasikan rencana liburan Anda bersama tour planner kami. Respon cepat ramah via WhatsApp.',
-    url: 'https://lomboktravelers.com/kontak',
+    url: 'https://lomboktravelers.reaksy.com/kontak',
     images: [
       {
         url: '/images/hero_tetebatu.png',

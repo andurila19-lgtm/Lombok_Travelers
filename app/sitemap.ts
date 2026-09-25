@@ -11,7 +11,7 @@ interface ArticleItem {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://lomboktravelers.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lomboktravelers.reaksy.com';
   const currentDate = new Date();
 
   // Static Routes

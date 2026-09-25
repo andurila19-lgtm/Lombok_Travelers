@@ -37,7 +37,7 @@ export async function generateMetadata({
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lomboktravelers.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lomboktravelers.reaksy.com';
   const canonicalUrl = `${siteUrl}/artikel/${article.slug}`;
 
   return {
@@ -86,7 +86,7 @@ export default async function ArticleDetailPage({
     .filter((a) => a.slug !== article.slug)
     .slice(0, 3);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lomboktravelers.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lomboktravelers.reaksy.com';
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',

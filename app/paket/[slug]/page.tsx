@@ -66,12 +66,12 @@ export default async function PackageDetailPage({ params }: PageProps) {
       priceCurrency: 'IDR',
       price: '0',
       availability: 'https://schema.org/InStock',
-      url: `https://lomboktravelers.com/paket/${pkg.slug}`,
+      url: `https://lomboktravelers.reaksy.com/paket/${pkg.slug}`,
     },
     provider: {
       '@type': 'TravelAgency',
       name: 'Lombok_Travelers',
-      url: 'https://lomboktravelers.com',
+      url: 'https://lomboktravelers.reaksy.com',
     },
   };
 

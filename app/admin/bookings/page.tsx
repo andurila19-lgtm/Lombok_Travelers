@@ -2082,7 +2082,7 @@ export default function AdminBookingsPage() {
                     Local Travel Partner • Jl. Pariwisata Tetebatu, Sikur, Lombok Timur, NTB 83662
                   </span>
                   <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-                    Hotline WhatsApp: +62 831-1711-0638 • Web: lomboktravelers.com
+                    Hotline WhatsApp: +62 831-1711-0638 • Web: lomboktravelers.reaksy.com
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>

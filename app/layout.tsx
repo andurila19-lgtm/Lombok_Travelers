@@ -13,7 +13,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://lomboktravelers.com'),
+  metadataBase: new URL('https://lomboktravelers.reaksy.com'),
   title: 'Lombok_Travelers — Paket Wisata Lombok, Private Trip & Transportasi Tetebatu',
   description:
     'Lombok_Travelers adalah local travel partner di Tetebatu, Lombok Timur. Melayani paket wisata Lombok 2H1M, 3H2M, 4H3M, trip harian, private tour, dan sewa transportasi bergaransi ramah & profesional.',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'id_ID',
-    url: 'https://lomboktravelers.com',
+    url: 'https://lomboktravelers.reaksy.com',
     siteName: 'Lombok_Travelers',
     title: 'Lombok_Travelers — Paket Wisata Lombok & Private Trip Tetebatu',
     description:
@@ -65,9 +65,9 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'TravelAgency',
     name: 'Lombok_Travelers',
-    image: 'https://lomboktravelers.com/images/logo.png',
-    '@id': 'https://lomboktravelers.com/#agency',
-    url: 'https://lomboktravelers.com',
+    image: 'https://lomboktravelers.reaksy.com/images/logo.png',
+    '@id': 'https://lomboktravelers.reaksy.com/#agency',
+    url: 'https://lomboktravelers.reaksy.com',
     telephone: '+6283117110638',
     address: {
       '@type': 'PostalAddress',

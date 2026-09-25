@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     'Profil Lombok_Travelers, agen perjalanan lokal berbasis di Tetebatu, Lombok Timur. Didirikan oleh pemandu lokal berlisensi dengan dedikasi memperkenalkan keaslian alam & budaya Lombok.',
   alternates: {
-    canonical: 'https://lomboktravelers.com/tentang-kami',
+    canonical: 'https://lomboktravelers.reaksy.com/tentang-kami',
   },
   openGraph: {
     title: 'Tentang Kami — Lombok_Travelers Tetebatu',
     description:
       'Kenal lebih dekat dengan tim lokal Lombok_Travelers. Layanan tour terpercaya, ramah, dan berpengalaman puluhan tahun.',
-    url: 'https://lomboktravelers.com/tentang-kami',
+    url: 'https://lomboktravelers.reaksy.com/tentang-kami',
     images: [
       {
         url: '/images/hero_tetebatu.png',

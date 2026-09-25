@@ -19,9 +19,9 @@ export async function POST(request: Request) {
     }
 
     const expectedUsername =
-      process.env.ADMIN_USERNAME || DEFAULT_ADMIN_USERNAME;
+      (process.env.ADMIN_USERNAME || DEFAULT_ADMIN_USERNAME).replace(/\r/g, '').trim();
 
-    if (username.trim() !== expectedUsername) {
+    if (username.trim().toLowerCase() !== expectedUsername.toLowerCase()) {
       return NextResponse.json(
         { success: false, error: 'Kredensial login tidak valid.' },
         { status: 401 }

@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     'Katalog lengkap paket wisata Lombok: Paket 2H1M, 3H2M, 4H3M, 5H4M, dan Honeymoon romantis. Fasilitas private car, hotel bintang, boat snorkeling, dan guide lokal asli Sasak.',
   alternates: {
-    canonical: 'https://lomboktravelers.com/paket',
+    canonical: 'https://lomboktravelers.reaksy.com/paket',
   },
   openGraph: {
     title: 'Katalog Paket Wisata Lombok Lengkap & Bergaransi — Lombok_Travelers',
     description:
       'Pilihan private trip terbaik di Lombok. Eksplorasi Mandalika, 3 Gili, Tetebatu, dan Sembalun bersama tim lokal berlisensi.',
-    url: 'https://lomboktravelers.com/paket',
+    url: 'https://lomboktravelers.reaksy.com/paket',
     siteName: 'Lombok_Travelers',
     images: [
       {

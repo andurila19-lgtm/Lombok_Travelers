@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     'Kumpulan artikel, tips snorkeling 3 Gili, rute trekking Gunung Rinjani, pesona Desa Wisata Tetebatu, dan rekomendasi kuliner khas Sasak langsung dari pemandu lokal.',
   alternates: {
-    canonical: 'https://lomboktravelers.com/artikel',
+    canonical: 'https://lomboktravelers.reaksy.com/artikel',
   },
   openGraph: {
     title: 'Panduan & Artikel Wisata Lombok Terlengkap — Lombok_Travelers',
     description:
       'Tips traveling, rute rahasia, rekomendasi musim liburan, dan panduan budaya Lombok dari tim lokal Tetebatu.',
-    url: 'https://lomboktravelers.com/artikel',
+    url: 'https://lomboktravelers.reaksy.com/artikel',
     images: [
       {
         url: '/images/rinjani_hero.jpg',
