@@ -62,7 +62,7 @@ export function generateBookingNumber(existingBookings: Booking[]): string {
 }
 
 export function createBooking(
-  data: Omit<Booking, 'id' | 'booking_number' | 'status' | 'created_at' | 'updated_at'> & {
+  data: Omit<Booking, 'id' | 'booking_number' | 'status' | 'created_at' | 'updated_at' | 'audit_log'> & {
     status?: BookingStatus;
   }
 ): Booking {
@@ -70,6 +70,7 @@ export function createBooking(
   const bookingNumber = generateBookingNumber(bookings);
   const nowIso = new Date().toISOString();
 
+  // SECURITY RULE: Every newly submitted booking by customer MUST ALWAYS start as 'New Inquiry'
   const newBooking: Booking = {
     id: `bk-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     booking_number: bookingNumber,
@@ -80,12 +81,23 @@ export function createBooking(
     package_name: data.package_name,
     travel_date: data.travel_date,
     participants: Number(data.participants) || 1,
+    adults: Number(data.adults) || Number(data.participants) || 1,
+    children: Number(data.children) || 0,
     pickup_location: data.pickup_location,
+    hotel_class: data.hotel_class || 'Tanpa Hotel / Sesuai Pilihan',
     transportation: data.transportation || 'Standar Paket (Innova / Avanza)',
     notes: data.notes || '',
-    status: data.status || 'New Inquiry',
+    status: 'New Inquiry', // Strictly 'New Inquiry'
     created_at: nowIso,
     updated_at: nowIso,
+    audit_log: [
+      {
+        timestamp: nowIso,
+        action: 'INQUIRY_CREATED',
+        note: 'Customer mengajukan reservasi online dengan status New Inquiry',
+        performed_by: 'Customer / Public Form',
+      },
+    ],
   };
 
   const updatedList = [newBooking, ...bookings];
@@ -95,17 +107,38 @@ export function createBooking(
 
 export function updateBooking(
   id: string,
-  updates: Partial<Omit<Booking, 'id' | 'booking_number' | 'created_at'>>
+  updates: Partial<Omit<Booking, 'id' | 'booking_number' | 'created_at'>>,
+  performedBy = 'Administrator'
 ): Booking | null {
   const bookings = getBookingsFromDisk();
   const index = bookings.findIndex((b) => b.id === id || b.booking_number === id);
   if (index === -1) return null;
 
   const current = bookings[index];
+  const nowIso = new Date().toISOString();
+
+  const auditHistory = current.audit_log ? [...current.audit_log] : [];
+  if (updates.status && updates.status !== current.status) {
+    auditHistory.push({
+      timestamp: nowIso,
+      action: 'STATUS_CHANGED',
+      note: `Status diubah dari [${current.status}] menjadi [${updates.status}]`,
+      performed_by: performedBy,
+    });
+  } else {
+    auditHistory.push({
+      timestamp: nowIso,
+      action: 'DETAILS_UPDATED',
+      note: 'Data booking diperbarui oleh admin',
+      performed_by: performedBy,
+    });
+  }
+
   const updated: Booking = {
     ...current,
     ...updates,
-    updated_at: new Date().toISOString(),
+    updated_at: nowIso,
+    audit_log: auditHistory,
   };
 
   bookings[index] = updated;

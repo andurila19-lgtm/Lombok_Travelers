@@ -30,6 +30,7 @@ export default function BookingModal({
   const [pickupLocation, setPickupLocation] = useState('');
   const [transportation, setTransportation] = useState('Innova Reborn (Private AC)');
   const [notes, setNotes] = useState('');
+  const [honeypot, setHoneypot] = useState(''); // Anti-spam honeypot
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -50,6 +51,7 @@ export default function BookingModal({
     setSubmittedBooking(null);
     setErrorMsg('');
     setIsSubmitting(false);
+    setHoneypot('');
     onClose();
   };
 
@@ -58,12 +60,37 @@ export default function BookingModal({
   const selectedPkg = packages.find((p) => p.slug === packageId);
   const packageName = packageTitle || (selectedPkg ? selectedPkg.title : (packageId ? packageId : 'Custom Trip Lombok'));
 
+  const todayStr = new Date().toISOString().split('T')[0];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
-    if (!customerName.trim() || !whatsapp.trim() || !travelDate) {
-      setErrorMsg('Mohon lengkapi Nama, Nomor WhatsApp, dan Tanggal Perjalanan.');
+    // Client-side validations
+    if (!customerName.trim() || customerName.trim().length < 2) {
+      setErrorMsg('Nama pemesan wajib diisi (minimal 2 karakter).');
+      return;
+    }
+
+    const cleanPhone = whatsapp.replace(/[^0-9+]/g, '');
+    if (!cleanPhone || cleanPhone.length < 8 || cleanPhone.length > 18) {
+      setErrorMsg('Nomor WhatsApp tidak valid (format nomor minimal 8 digit).');
+      return;
+    }
+
+    if (!travelDate) {
+      setErrorMsg('Silakan pilih tanggal keberangkatan trip.');
+      return;
+    }
+
+    if (travelDate < todayStr) {
+      setErrorMsg('Tanggal perjalanan tidak boleh tanggal yang sudah lewat.');
+      return;
+    }
+
+    const paxNum = Number(participants) || 1;
+    if (paxNum < 1 || paxNum > 100) {
+      setErrorMsg('Jumlah peserta harus antara 1 sampai 100 orang.');
       return;
     }
 
@@ -77,10 +104,11 @@ export default function BookingModal({
         package_id: packageId,
         package_name: packageName,
         travel_date: travelDate,
-        participants: Number(participants) || 1,
+        participants: paxNum,
         pickup_location: pickupLocation.trim() || 'Bandara Internasional Lombok (BIL)',
         transportation: transportation,
         notes: notes.trim(),
+        hp_field: honeypot, // Honeypot verification
       };
 
       const res = await fetch('/api/bookings', {
@@ -94,41 +122,21 @@ export default function BookingModal({
       if (json.success && json.data) {
         setSubmittedBooking(json.data);
       } else {
-        // Fallback for client-side demo if server fails
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const d = String(now.getDate()).padStart(2, '0');
-        const fallbackBooking: Booking = {
-          id: `bk-${Date.now()}`,
-          booking_number: `LT-${y}${m}${d}-00${Math.floor(Math.random() * 89 + 10)}`,
-          customer_name: customerName,
-          whatsapp,
-          email,
-          package_id: packageId,
-          package_name: packageName,
-          travel_date: travelDate,
-          participants: Number(participants),
-          pickup_location: pickupLocation || 'Bandara Internasional Lombok (BIL)',
-          transportation,
-          notes,
-          status: 'New Inquiry',
-          created_at: now.toISOString(),
-          updated_at: now.toISOString(),
-        };
-        setSubmittedBooking(fallbackBooking);
+        // Display specific error returned by server or fallback
+        const serverError = json.error || json.message || 'Terjadi kesalahan validasi.';
+        setErrorMsg(serverError);
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('Terjadi kendala teknis. Namun Anda tetap dapat reservasi via WhatsApp.');
+      setErrorMsg('Terjadi kendala jaringan saat mengirim booking.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // WhatsApp click-to-chat formatted message
+  // WhatsApp click-to-chat formatted message according to exact specification
   const generateWaLink = (booking: Booking) => {
-    const text = `Halo Lombok_Travelers,\n\nSaya ingin melakukan booking:\n\nNo. Booking: ${booking.booking_number}\nNama: ${booking.customer_name}\nPaket: ${booking.package_name}\nTanggal: ${booking.travel_date}\nPeserta: ${booking.participants} Orang\nPickup: ${booking.pickup_location}\nTransport: ${booking.transportation}${booking.notes ? `\nCatatan: ${booking.notes}` : ''}\n\nMohon konfirmasi ketersediaannya.\n\nTerima kasih.`;
+    const text = `Halo Lombok_Travelers,\n\nSaya ingin konfirmasi booking:\n\nNo. Booking: ${booking.booking_number}\nNama: ${booking.customer_name}\nPaket: ${booking.package_name}\nTanggal: ${booking.travel_date}\nPeserta: ${booking.participants} Orang\nPickup: ${booking.pickup_location}\n\nMohon konfirmasi ketersediaannya.`;
     return `https://wa.me/6283117110638?text=${encodeURIComponent(text)}`;
   };
 
@@ -379,6 +387,20 @@ export default function BookingModal({
                BOOKING FORM
                ======================================================= */
             <form onSubmit={handleSubmit}>
+              {/* Anti-Spam Bot Trap (Honeypot) */}
+              <div style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0, overflow: 'hidden' }} aria-hidden="true">
+                <label htmlFor="hp_field_booking">Jangan isi bidang ini</label>
+                <input
+                  id="hp_field_booking"
+                  type="text"
+                  name="hp_field"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+              </div>
+
               {errorMsg && (
                 <div
                   style={{
@@ -522,6 +544,7 @@ export default function BookingModal({
                   <input
                     type="date"
                     id="bk_date"
+                    min={todayStr}
                     value={travelDate}
                     onChange={(e) => setTravelDate(e.target.value)}
                     required

@@ -23,7 +23,7 @@ export default function AdminDashboardPage() {
 
   const totalPax = bookings.reduce((sum, b) => sum + (b.participants || 1), 0);
   const newInquiries = bookings.filter((b) => b.status === 'New Inquiry');
-  const activeBookings = bookings.filter((b) => b.status === 'Booking' || b.status === 'DP');
+  const activeBookings = bookings.filter((b) => b.status === 'Confirmed' || b.status === 'Menunggu Konfirmasi' || b.status === 'DP' || b.status === 'Lunas' || (b.status as string) === 'Booking');
   const completedBookings = bookings.filter((b) => b.status === 'Selesai');
   const estimatedRevenue = totalPax * 1650000;
 

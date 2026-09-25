@@ -6,7 +6,7 @@ import { Booking, BookingStatus } from '@/types';
 import packagesData from '@/data/packages.json';
 
 const STATUS_CONFIG: Record<
-  BookingStatus,
+  string,
   { label: string; bg: string; text: string; border: string; icon: string; countBadge: string }
 > = {
   'New Inquiry': {
@@ -16,6 +16,22 @@ const STATUS_CONFIG: Record<
     border: '#bfdbfe',
     icon: 'fa-bell-o',
     countBadge: '#3b82f6',
+  },
+  'Menunggu Konfirmasi': {
+    label: 'Menunggu Konfirmasi',
+    bg: '#fff7ed',
+    text: '#c2410c',
+    border: '#ffedd5',
+    icon: 'fa-clock-o',
+    countBadge: '#ea580c',
+  },
+  Confirmed: {
+    label: 'Confirmed',
+    bg: '#ecfdf5',
+    text: '#047857',
+    border: '#a7f3d0',
+    icon: 'fa-check-circle-o',
+    countBadge: '#10b981',
   },
   Booking: {
     label: 'Booking',
@@ -923,7 +939,8 @@ export default function AdminBookingsPage() {
                               }}
                             >
                               <option value="New Inquiry">New Inquiry</option>
-                              <option value="Booking">Booking</option>
+                              <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                              <option value="Confirmed">Confirmed</option>
                               <option value="DP">DP</option>
                               <option value="Lunas">Lunas</option>
                               <option value="Selesai">Selesai</option>
@@ -1074,7 +1091,8 @@ export default function AdminBookingsPage() {
                           }}
                         >
                           <option value="New Inquiry">New Inquiry</option>
-                          <option value="Booking">Booking</option>
+                          <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                          <option value="Confirmed">Confirmed</option>
                           <option value="DP">DP</option>
                           <option value="Lunas">Lunas</option>
                           <option value="Selesai">Selesai</option>
@@ -1837,8 +1855,6 @@ export default function AdminBookingsPage() {
                       fontSize: '12px',
                       fontWeight: 600,
                       textDecoration: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
                       gap: '6px',
                     }}
                   >
@@ -1846,6 +1862,28 @@ export default function AdminBookingsPage() {
                   </a>
                 </div>
               </div>
+
+              {/* AUDIT LOG TRAIL (Security Requirement #11) */}
+              {selectedBooking.audit_log && selectedBooking.audit_log.length > 0 && (
+                <div style={{ marginTop: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px' }}>
+                  <strong style={{ fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                    <i className="fa fa-history"></i> Log Aktivitas & Audit Perubahan:
+                  </strong>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11.5px', color: '#64748b' }}>
+                    {selectedBooking.audit_log.map((log, idx) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                        <span style={{ color: '#94a3b8', fontFamily: 'monospace' }}>
+                          {new Date(log.timestamp).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })}
+                        </span>
+                        <span style={{ fontWeight: 700, color: '#334155' }}>{log.action}</span>
+                        <span>oleh</span>
+                        <span style={{ fontWeight: 600, color: '#16a34a' }}>{log.actor}</span>
+                        {log.details && <span style={{ color: '#64748b' }}>({log.details})</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Footer */}
@@ -1901,6 +1939,28 @@ export default function AdminBookingsPage() {
                   }}
                 >
                   <i className="fa fa-pencil"></i> Edit Booking
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteConfirmId(selectedBooking.id);
+                  }}
+                  style={{
+                    background: '#fef2f2',
+                    border: '1px solid #fecaca',
+                    borderRadius: '6px',
+                    padding: '8px 12px',
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    color: '#dc2626',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <i className="fa fa-trash"></i> Hapus
                 </button>
               </div>
 
@@ -2287,6 +2347,23 @@ export default function AdminBookingsPage() {
                   onChange={(e) => setFormData({ ...formData, transportation: e.target.value })}
                   style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
                 />
+              </div>
+
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}>Status Reservasi</label>
+                <select
+                  value={formData.status || 'New Inquiry'}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as BookingStatus })}
+                  style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                >
+                  <option value="New Inquiry">New Inquiry</option>
+                  <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="DP">DP</option>
+                  <option value="Lunas">Lunas</option>
+                  <option value="Selesai">Selesai</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
               </div>
 
               <div style={{ marginBottom: '16px' }}>

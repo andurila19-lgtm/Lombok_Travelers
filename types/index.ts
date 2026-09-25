@@ -40,11 +40,22 @@ export interface DailyTrip {
 
 export type BookingStatus =
   | 'New Inquiry'
+  | 'Menunggu Konfirmasi'
+  | 'Confirmed'
   | 'Booking'
   | 'DP'
   | 'Lunas'
   | 'Selesai'
   | 'Cancelled';
+
+export interface BookingAuditItem {
+  timestamp: string;
+  action: string;
+  note?: string;
+  performed_by?: string;
+  actor?: string;
+  details?: string;
+}
 
 export interface Booking {
   id: string;
@@ -56,10 +67,14 @@ export interface Booking {
   package_name: string;
   travel_date: string;
   participants: number;
+  adults?: number;
+  children?: number;
   pickup_location: string;
+  hotel_class?: string;
   transportation: string;
   notes?: string;
   status: BookingStatus;
   created_at: string;
   updated_at: string;
+  audit_log?: BookingAuditItem[];
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { ADMIN_COOKIE_NAME, verifySessionToken } from '@/lib/auth';
 
 /**
  * In-memory sliding window rate limiting
@@ -30,7 +31,11 @@ function cleanupExpired() {
 /**
  * Checks if the given key (IP + endpoint) has exceeded the rate limit.
  */
-function checkRateLimit(key: string, limit: number, windowMs: number): { allowed: boolean; remaining: number } {
+function checkRateLimit(
+  key: string,
+  limit: number,
+  windowMs: number
+): { allowed: boolean; remaining: number } {
   cleanupExpired();
   const now = Date.now();
   const record = rateLimitMap.get(key);
@@ -58,12 +63,45 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:3000',
 ];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const origin = request.headers.get('origin');
-  const method = request.method;
 
-  // 1. CORS Preflight & Verification for API routes
+  // FAST PATH: Never intercept public pages or static assets
+  if (!pathname.startsWith('/admin') && !pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
+  try {
+    const origin = request.headers.get('origin');
+    const method = request.method;
+
+    // --------------------------------------------------------------------------
+    // 1. ADMIN ROUTE AUTHORIZATION GATEWAY
+    // --------------------------------------------------------------------------
+    if (pathname.startsWith('/admin')) {
+      const sessionToken = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+      const adminUser = await verifySessionToken(sessionToken);
+
+      // If visiting /admin/login while already authenticated -> redirect to /admin
+      if (pathname === '/admin/login') {
+        if (adminUser) {
+          return NextResponse.redirect(new URL('/admin', request.url));
+        }
+        return NextResponse.next();
+      }
+
+      // For all other /admin routes (/admin, /admin/bookings, /admin/schedule, etc.)
+      // If not authenticated -> strictly redirect to /admin/login
+      if (!adminUser) {
+        const loginUrl = new URL('/admin/login', request.url);
+        loginUrl.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+
+  // --------------------------------------------------------------------------
+  // 2. CORS PREFLIGHT & SECURE API ROUTING
+  // --------------------------------------------------------------------------
   if (pathname.startsWith('/api')) {
     // Handle CORS preflight OPTIONS request
     if (method === 'OPTIONS') {
@@ -75,28 +113,57 @@ export function middleware(request: NextRequest) {
           origin.endsWith('.lomboktravelers.com'))
       ) {
         preflightHeaders.set('Access-Control-Allow-Origin', origin);
-        preflightHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-        preflightHeaders.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        preflightHeaders.set(
+          'Access-Control-Allow-Methods',
+          'GET, POST, PATCH, DELETE, OPTIONS'
+        );
+        preflightHeaders.set(
+          'Access-Control-Allow-Headers',
+          'Content-Type, Authorization, X-Requested-With'
+        );
         preflightHeaders.set('Access-Control-Max-Age', '86400');
       }
       return new NextResponse(null, { status: 204, headers: preflightHeaders });
     }
 
-    // 2. API Rate Limiting on POST, PATCH, DELETE (Prevent Spam & Bot Abuse)
-    if (['POST', 'PATCH', 'DELETE'].includes(method)) {
-      const forwardedFor = request.headers.get('x-forwarded-for');
-      const realIp = request.headers.get('x-real-ip');
-      const ip = (forwardedFor ? forwardedFor.split(',')[0].trim() : realIp) || '127.0.0.1';
+    const forwardedFor = request.headers.get('x-forwarded-for');
+    const realIp = request.headers.get('x-real-ip');
+    const ip =
+      (forwardedFor ? forwardedFor.split(',')[0].trim() : realIp) || '127.0.0.1';
 
-      // Limit: max 15 requests per minute per IP for mutating endpoints
+    // 2a. Brute Force Protection on Login Endpoint (Strict: max 5 req/minute)
+    if (pathname === '/api/auth/login' && method === 'POST') {
+      const loginRateKey = `${ip}:auth-login`;
+      const { allowed } = checkRateLimit(loginRateKey, 5, 60 * 1000);
+      if (!allowed) {
+        return new NextResponse(
+          JSON.stringify({
+            success: false,
+            error:
+              'Terlalu banyak percobaan login gagal. Demi keamanan, silakan tunggu 1 menit.',
+          }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': '60',
+            },
+          }
+        );
+      }
+    }
+
+    // 2b. Rate Limiting on API POST/PATCH/DELETE endpoints (max 15 req/minute)
+    if (['POST', 'PATCH', 'DELETE'].includes(method)) {
       const rateLimitKey = `${ip}:${pathname}`;
-      const { allowed, remaining } = checkRateLimit(rateLimitKey, 15, 60 * 1000);
+      const { allowed } = checkRateLimit(rateLimitKey, 15, 60 * 1000);
 
       if (!allowed) {
         return new NextResponse(
           JSON.stringify({
             success: false,
-            error: 'Terlalu banyak permintaan (Rate limit terlampaui). Silakan tunggu 1 menit sebelum mencoba kembali.',
+            error:
+              'Terlalu banyak permintaan (Rate limit terlampaui). Silakan tunggu 1 menit sebelum mencoba kembali.',
           }),
           {
             status: 429,
@@ -110,9 +177,36 @@ export function middleware(request: NextRequest) {
         );
       }
     }
+
+    // 2c. Server-Side API Authorization Check for Admin Booking Management
+    // Customer can only POST new bookings.
+    // GET /api/bookings (list all), PATCH/DELETE /api/bookings/* require valid admin session!
+    const isAdminOnlyApi =
+      (pathname === '/api/bookings' && method === 'GET') ||
+      (pathname.startsWith('/api/bookings/') && ['GET', 'PATCH', 'DELETE'].includes(method));
+
+    if (isAdminOnlyApi) {
+      const sessionToken = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+      const adminUser = await verifySessionToken(sessionToken);
+
+      if (!adminUser) {
+        return new NextResponse(
+          JSON.stringify({
+            success: false,
+            error: 'Unauthorized: Akses ditolak. Harap login sebagai administrator.',
+          }),
+          {
+            status: 401,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
+    }
   }
 
-  // 3. Process normal request & attach Enterprise Security Headers
+  // --------------------------------------------------------------------------
+  // 3. ENTERPRISE SECURITY HEADERS
+  // --------------------------------------------------------------------------
   const response = NextResponse.next();
 
   // Attach CORS headers to API responses
@@ -123,26 +217,34 @@ export function middleware(request: NextRequest) {
       origin.endsWith('.lomboktravelers.com')
     ) {
       response.headers.set('Access-Control-Allow-Origin', origin);
-      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+      response.headers.set(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PATCH, DELETE, OPTIONS'
+      );
+      response.headers.set(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, X-Requested-With'
+      );
     }
   }
 
   // Enterprise HTTP Security Headers (OWASP Recommended)
-  response.headers.set('X-Frame-Options', 'SAMEORIGIN'); // Prevent clickjacking
-  response.headers.set('X-Content-Type-Options', 'nosniff'); // Prevent MIME confusion attacks
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin'); // Protect referrer privacy
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()'); // Disable unused hardware
-  response.headers.set('X-XSS-Protection', '1; mode=block'); // Legacy XSS defense
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=()'
+  );
+  response.headers.set('X-XSS-Protection', '1; mode=block');
 
-  return response;
+    return response;
+  } catch (err) {
+    console.error('Security Middleware Exception:', err);
+    return NextResponse.next();
+  }
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except static files, images, and favicons
-     */
-    '/((?!_next/static|_next/image|images|favicon.ico).*)',
-  ],
+  matcher: ['/admin/:path*', '/api/:path*'],
 };

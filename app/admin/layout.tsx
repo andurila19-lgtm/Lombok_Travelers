@@ -44,11 +44,32 @@ export default function AdminLayout({
     }
   };
 
+  // If this is the login page, render children directly without admin layout wrapper
+  if (pathname === '/admin/login' || pathname.startsWith('/admin/login')) {
+    return <>{children}</>;
+  }
+
   useEffect(() => {
-    const isAuth = sessionStorage.getItem('lt_admin_authenticated') === 'true';
-    setIsAuthenticated(isAuth);
-    setAuthChecked(true);
-  }, []);
+    // Check session with server API
+    fetch('/api/auth/me')
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error('Not authenticated');
+      })
+      .then((data) => {
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+        } else {
+          window.location.href = `/admin/login?redirect=${encodeURIComponent(pathname)}`;
+        }
+      })
+      .catch(() => {
+        window.location.href = `/admin/login?redirect=${encodeURIComponent(pathname)}`;
+      })
+      .finally(() => {
+        setAuthChecked(true);
+      });
+  }, [pathname]);
 
   // Realtime Polling for new bookings (runs every 20s)
   useEffect(() => {
@@ -79,21 +100,14 @@ export default function AdminLayout({
     return () => clearInterval(interval);
   }, [isAuthenticated, knownBookingCount]);
 
-  const handleUnlock = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (pinInput === '120524' || pinInput === '2026' || pinInput === '123456') {
-      sessionStorage.setItem('lt_admin_authenticated', 'true');
-      setIsAuthenticated(true);
-      setPinError('');
-    } else {
-      setPinError('PIN salah! Silakan gunakan PIN resmi 120524 (NIB Travel).');
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (err) {
+      console.error('Logout error:', err);
     }
-  };
-
-  const handleLock = () => {
     sessionStorage.removeItem('lt_admin_authenticated');
-    setIsAuthenticated(false);
-    setPinInput('');
+    window.location.href = '/admin/login';
   };
 
   const navItems = [
@@ -137,147 +151,40 @@ export default function AdminLayout({
     },
   ];
 
-  // If session is checking or not authenticated, render PIN Security Screen
-  if (authChecked && !isAuthenticated) {
+  // While verifying session, render a sleek loading state
+  if (!authChecked || !isAuthenticated) {
     return (
       <div
         style={{
           minHeight: '100vh',
           backgroundColor: '#091e13',
-          backgroundImage: 'radial-gradient(ellipse at 50% 30%, rgba(24, 90, 56, 0.4) 0%, rgba(9, 30, 19, 0.95) 70%)',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '20px',
           color: '#ffffff',
           fontFamily: 'inherit',
+          gap: '16px',
         }}
       >
         <div
           style={{
-            maxWidth: '420px',
-            width: '100%',
-            backgroundColor: '#0f291a',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '20px',
-            padding: '36px 30px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(34, 197, 94, 0.1)',
-            textAlign: 'center',
+            width: '46px',
+            height: '46px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #185a38 0%, #22c55e 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '18px',
+            fontWeight: 900,
+            boxShadow: '0 4px 16px rgba(34, 197, 94, 0.4)',
           }}
         >
-          {/* Logo */}
-          <div
-            style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '16px',
-              background: 'linear-gradient(135deg, #185a38 0%, #22c55e 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 16px auto',
-              fontSize: '22px',
-              fontWeight: 900,
-              color: '#ffffff',
-              boxShadow: '0 4px 16px rgba(34, 197, 94, 0.35)',
-            }}
-          >
-            LT
-          </div>
-
-          <span
-            style={{
-              backgroundColor: 'rgba(34, 197, 94, 0.15)',
-              color: '#86efac',
-              fontSize: '11px',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              padding: '3px 10px',
-              borderRadius: '999px',
-            }}
-          >
-            Pusat Komando Operasional
-          </span>
-
-          <h1 style={{ fontSize: '20px', fontWeight: 800, margin: '12px 0 6px 0', color: '#ffffff' }}>
-            Lombok_Travelers ERP
-          </h1>
-          <p style={{ fontSize: '13px', color: '#94a3b8', margin: '0 0 24px 0', lineHeight: 1.5 }}>
-            Silakan masukkan PIN otorisasi owner / admin untuk mengakses database reservasi & keuangan.
-          </p>
-
-          <form onSubmit={handleUnlock}>
-            <div style={{ marginBottom: '16px', position: 'relative' }}>
-              <input
-                type="password"
-                maxLength={6}
-                value={pinInput}
-                onChange={(e) => setPinInput(e.target.value)}
-                placeholder="Masukkan 6 Digit PIN"
-                autoFocus
-                style={{
-                  width: '100%',
-                  padding: '14px 16px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  border: pinError ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.2)',
-                  color: '#ffffff',
-                  fontSize: '18px',
-                  textAlign: 'center',
-                  letterSpacing: '0.3em',
-                  outline: 'none',
-                }}
-              />
-              {pinError && (
-                <div style={{ color: '#f87171', fontSize: '12px', marginTop: '6px' }}>
-                  {pinError}
-                </div>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '10px',
-                backgroundColor: '#22c55e',
-                color: '#ffffff',
-                border: 'none',
-                fontSize: '14px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
-              }}
-            >
-              <i className="fa fa-unlock-alt"></i> Buka Portal Admin
-            </button>
-          </form>
-
-          <div style={{ marginTop: '20px', fontSize: '12px', color: '#64748b' }}>
-            Petunjuk: Gunakan PIN resmi NIB Travel: <strong style={{ color: '#86efac' }}>120524</strong>
-          </div>
-
-          <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px' }}>
-            <Link
-              href="/"
-              style={{
-                color: '#94a3b8',
-                fontSize: '12.5px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              <i className="fa fa-arrow-left"></i> Kembali ke Website Publik
-            </Link>
-          </div>
+          LT
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#86efac', fontSize: '13px', fontWeight: 600 }}>
+          <i className="fa fa-spinner fa-spin"></i> Memverifikasi Kredensial Admin...
         </div>
       </div>
     );
@@ -515,26 +422,28 @@ export default function AdminLayout({
               </span>
             </div>
 
-            {/* Lock / Logout Portal Button */}
+            {/* Secure Logout Button */}
             <button
               type="button"
-              onClick={handleLock}
-              title="Kunci & Keluar Portal"
+              onClick={handleLogout}
+              title="Keluar / Logout Aman"
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                color: '#cbd5e1',
+                background: 'rgba(239, 68, 68, 0.18)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                color: '#fca5a5',
                 padding: '6px 10px',
                 borderRadius: '6px',
                 cursor: 'pointer',
                 fontSize: '11.5px',
+                fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '5px',
+                transition: 'all 0.2s ease',
               }}
             >
-              <i className="fa fa-lock" style={{ color: '#f87171' }}></i>
-              <span>Kunci</span>
+              <i className="fa fa-sign-out" style={{ color: '#ef4444' }}></i>
+              <span>Logout</span>
             </button>
           </div>
         </div>

@@ -1,5 +1,33 @@
 [
   {
+    "id": "bk-1790300616141-642",
+    "booking_number": "LT-20260925-001",
+    "customer_name": "Budi Santoso",
+    "whatsapp": "081234567890",
+    "email": "",
+    "package_id": "paket-lombok-3-hari-2-malam",
+    "package_name": "Paket Lombok 3H2M",
+    "travel_date": "2026-09-26",
+    "participants": 3,
+    "adults": 1,
+    "children": 0,
+    "pickup_location": "Lombok Airport / Hotel",
+    "hotel_class": "Tanpa Hotel / Sesuai Pilihan",
+    "transportation": "Standar Paket",
+    "notes": "",
+    "status": "New Inquiry",
+    "created_at": "2026-09-25T01:43:36.141Z",
+    "updated_at": "2026-09-25T01:43:36.141Z",
+    "audit_log": [
+      {
+        "timestamp": "2026-09-25T01:43:36.141Z",
+        "action": "INQUIRY_CREATED",
+        "note": "Customer mengajukan reservasi online dengan status New Inquiry",
+        "performed_by": "Customer / Public Form"
+      }
+    ]
+  },
+  {
     "id": "bk-001",
     "booking_number": "LT-20260924-001",
     "customer_name": "Andi Pratama",
