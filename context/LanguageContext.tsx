@@ -443,12 +443,30 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const convertPriceString = (priceStr: string) => {
     if (currency !== 'USD' || !priceStr) return priceStr;
-    // Extract numbers from string like "Rp 1.650.000 / pax"
-    const cleaned = priceStr.replace(/[^\d]/g, '');
-    const num = parseInt(cleaned, 10);
-    if (!num || isNaN(num)) return priceStr;
-    const usd = Math.round(num / 15800);
-    return priceStr.replace(/Rp\s*[\d.]+/i, `$${usd} USD`);
+
+    // Matches patterns like "Rp 550.000", "Rp. 1.250.000", "Rp 850,000", "IDR 500.000"
+    // Captures only the numeric portion right after Rp / IDR
+    if (/(?:Rp\.?|IDR)/i.test(priceStr)) {
+      return priceStr.replace(/(?:Rp\.?|IDR)\s*([\d.,]+)/gi, (match, priceDigits) => {
+        const cleanNum = priceDigits.replace(/[^\d]/g, '');
+        const idr = parseInt(cleanNum, 10);
+        if (!idr || isNaN(idr)) return match;
+        const usd = Math.round(idr / 15800);
+        return `$${usd} USD`;
+      });
+    }
+
+    // If it's a standalone formatted number like "550.000"
+    if (/^[\d.,\s]+$/.test(priceStr.trim())) {
+      const cleaned = priceStr.trim().replace(/[^\d]/g, '');
+      const idr = parseInt(cleaned, 10);
+      if (idr && !isNaN(idr) && idr > 1000) {
+        const usd = Math.round(idr / 15800);
+        return `$${usd} USD`;
+      }
+    }
+
+    return priceStr;
   };
 
   return (

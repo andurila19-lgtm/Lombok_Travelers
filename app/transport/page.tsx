@@ -250,39 +250,39 @@ export default function TransportPage() {
             <tbody>
               <tr>
                 <td><strong>Bandara BIL ↔ Kuta Mandalika</strong></td>
-                <td>Rp 200.000</td>
-                <td>Rp 350.000</td>
-                <td>Rp 550.000</td>
+                <td>{convertPriceString('Rp 200.000')}</td>
+                <td>{convertPriceString('Rp 350.000')}</td>
+                <td>{convertPriceString('Rp 550.000')}</td>
               </tr>
               <tr>
                 <td><strong>Bandara BIL ↔ Kota Mataram</strong></td>
-                <td>Rp 250.000</td>
-                <td>Rp 400.000</td>
-                <td>Rp 650.000</td>
+                <td>{convertPriceString('Rp 250.000')}</td>
+                <td>{convertPriceString('Rp 400.000')}</td>
+                <td>{convertPriceString('Rp 650.000')}</td>
               </tr>
               <tr>
                 <td><strong>Bandara BIL ↔ Senggigi</strong></td>
-                <td>Rp 300.000</td>
-                <td>Rp 450.000</td>
-                <td>Rp 750.000</td>
+                <td>{convertPriceString('Rp 300.000')}</td>
+                <td>{convertPriceString('Rp 450.000')}</td>
+                <td>{convertPriceString('Rp 750.000')}</td>
               </tr>
               <tr>
                 <td><strong>Bandara BIL ↔ Pelabuhan Bangsal (Gili)</strong></td>
-                <td>Rp 350.000</td>
-                <td>Rp 500.000</td>
-                <td>Rp 850.000</td>
+                <td>{convertPriceString('Rp 350.000')}</td>
+                <td>{convertPriceString('Rp 500.000')}</td>
+                <td>{convertPriceString('Rp 850.000')}</td>
               </tr>
               <tr>
                 <td><strong>Bandara BIL ↔ Tetebatu (Lombok Timur)</strong></td>
-                <td>Rp 300.000</td>
-                <td>Rp 450.000</td>
-                <td>Rp 750.000</td>
+                <td>{convertPriceString('Rp 300.000')}</td>
+                <td>{convertPriceString('Rp 450.000')}</td>
+                <td>{convertPriceString('Rp 750.000')}</td>
               </tr>
               <tr>
                 <td><strong>Bandara BIL ↔ Sembalun / Senaru</strong></td>
-                <td>Rp 500.000</td>
-                <td>Rp 750.000</td>
-                <td>Rp 1.100.000</td>
+                <td>{convertPriceString('Rp 500.000')}</td>
+                <td>{convertPriceString('Rp 750.000')}</td>
+                <td>{convertPriceString('Rp 1.100.000')}</td>
               </tr>
             </tbody>
           </table>

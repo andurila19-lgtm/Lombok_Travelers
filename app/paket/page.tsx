@@ -43,7 +43,7 @@ function SearchParamSync({
 }
 
 export default function PaketPage() {
-  const { language } = useLanguage();
+  const { language, convertPriceString } = useLanguage();
   const packages: TourPackage[] = packagesData as TourPackage[];
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -242,7 +242,7 @@ export default function PaketPage() {
                       <span className="price-label">
                         {language === 'en' ? 'Starting from' : 'Mulai dari'}
                       </span>
-                      <span className="price-value">{pkg.pricePlaceholder}</span>
+                      <span className="price-value">{convertPriceString(pkg.pricePlaceholder)}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                       <Link href={`/paket/${pkg.slug}`} className="btn-card-secondary">
