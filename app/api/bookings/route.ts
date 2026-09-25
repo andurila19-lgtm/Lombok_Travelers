@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getBookingsFromDisk, createBooking } from '@/lib/bookingStore';
+import { createBookingSchema } from '@/lib/validations/booking';
 
 export async function GET() {
   try {
@@ -17,24 +18,30 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    if (!body.customer_name || !body.whatsapp || !body.package_name || !body.travel_date) {
+    // 1. Zod Schema Validation & Input Sanitization
+    const parseResult = createBookingSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errorMsg = parseResult.error.issues.map((e) => e.message).join(', ');
       return NextResponse.json(
-        { success: false, error: 'Nama, WhatsApp, Paket, dan Tanggal wajib diisi.' },
+        { success: false, error: errorMsg },
         { status: 400 }
       );
     }
 
+    const validData = parseResult.data;
+
+    // 2. Persist safely sanitized booking
     const newBooking = createBooking({
-      customer_name: body.customer_name,
-      whatsapp: body.whatsapp,
-      email: body.email,
-      package_id: body.package_id || 'custom-trip',
-      package_name: body.package_name,
-      travel_date: body.travel_date,
-      participants: Number(body.participants) || 1,
-      pickup_location: body.pickup_location || 'Lombok Airport / Hotel',
-      transportation: body.transportation || 'Standar Paket',
-      notes: body.notes,
+      customer_name: validData.customer_name,
+      whatsapp: validData.whatsapp,
+      email: validData.email,
+      package_id: validData.package_id,
+      package_name: validData.package_name,
+      travel_date: validData.travel_date,
+      participants: validData.participants,
+      pickup_location: validData.pickup_location,
+      transportation: validData.transportation,
+      notes: validData.notes,
       status: 'New Inquiry',
     });
 
@@ -45,8 +52,8 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating booking:', error);
     return NextResponse.json(
-      { success: false, error: 'Internal server error while creating booking' },
-      { status: 500 }
+      { success: false, error: 'Format payload data tidak valid atau corrupt' },
+      { status: 400 }
     );
   }
 }

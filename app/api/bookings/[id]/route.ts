@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getBookingsFromDisk, updateBooking, deleteBooking } from '@/lib/bookingStore';
+import { updateBookingStatusSchema } from '@/lib/validations/booking';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -31,6 +32,16 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
     const body = await request.json();
+
+    if (body.status) {
+      const parseResult = updateBookingStatusSchema.safeParse({ status: body.status });
+      if (!parseResult.success) {
+        return NextResponse.json(
+          { success: false, error: parseResult.error.issues[0]?.message || 'Status booking tidak valid' },
+          { status: 400 }
+        );
+      }
+    }
 
     const updated = updateBooking(id, body);
     if (!updated) {
