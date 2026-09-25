@@ -71,6 +71,7 @@ body {
   width: 100%;
   position: relative;
   touch-action: pan-y;
+  padding-top: 80px;
 }
 
 a {
@@ -125,8 +126,10 @@ h1, h2, h3, h4, h5, h6 {
    1. NAVBAR / HEADER (Exact Benchmark Style)
    ========================================================================== */
 #header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   background-color: #ffffff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
@@ -2828,6 +2831,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 768px) {
+  body {
+    padding-top: 60px !important;
+  }
   .nav-menu, .bahasa-toggle, .desktop-controls, .header-right {
     display: none !important;
   }
@@ -3213,11 +3219,110 @@ h1, h2, h3, h4, h5, h6 {
     padding: 6px 12px !important;
   }
 
-  /* Custom Trip, About, Contact & Grids */
+  /* Custom Trip Mobile Responsiveness */
   .custom-trip-container {
     grid-template-columns: 1fr !important;
-    gap: 18px !important;
+    gap: 20px !important;
   }
+  .custom-trip-info h2 {
+    font-size: 22px !important;
+    line-height: 1.3 !important;
+    margin-bottom: 10px !important;
+  }
+  .custom-trip-info p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 16px !important;
+  }
+  .custom-features-list {
+    gap: 8px !important;
+    margin-bottom: 18px !important;
+  }
+  .custom-feature-item {
+    font-size: 12.5px !important;
+  }
+  .custom-form-card {
+    padding: 20px 16px !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+  }
+  .custom-form-card h3 {
+    font-size: 17px !important;
+    margin-bottom: 16px !important;
+  }
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .form-group.col-span-2 {
+    grid-column: span 1 !important;
+  }
+  .form-group label {
+    font-size: 11.5px !important;
+    margin-bottom: 2px !important;
+  }
+  .form-input, .form-select, .form-textarea {
+    font-size: 13.5px !important;
+    padding: 10px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .btn-submit-custom {
+    padding: 12px 18px !important;
+    font-size: 13.5px !important;
+  }
+
+  /* Concierge Banner Mobile Responsiveness */
+  .concierge-banner {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 24px 18px !important;
+    gap: 18px !important;
+    border-radius: 16px !important;
+  }
+  .concierge-left {
+    max-width: 100% !important;
+  }
+  .concierge-left h3 {
+    font-size: 20px !important;
+    line-height: 1.3 !important;
+  }
+  .concierge-left p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+  .btn-concierge {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 18px !important;
+    font-size: 13.5px !important;
+    white-space: normal !important;
+  }
+
+  /* Final CTA Mobile Responsiveness */
+  .final-cta-section {
+    padding: 44px 16px !important;
+  }
+  .final-cta-content h2 {
+    font-size: 24px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 8px !important;
+  }
+  .final-cta-content p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 20px !important;
+  }
+  .final-cta-content .hero-buttons {
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+  .final-cta-content .hero-buttons a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
   .about-container {
     grid-template-columns: 1fr !important;
     gap: 18px !important;
